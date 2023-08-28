@@ -29,9 +29,13 @@ class EstudianteResource extends JsonResource
             'telefono' => $this->telefono,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'carrera' => $this->whenLoaded('carrera'),
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'carrera' => CarreraResource::make($this->whenLoaded('carrera')),
             'proyectos' => ProyectoResource::collection($this->whenLoaded('proyectos')),
             'empresas' => EmpresaResource::collection($this->whenLoaded('empresas')),
+            'actividad' => $this->whenPivotLoaded('empresa_estudiante', function () {
+                return $this->pivot->actividad;
+            }),
         ];
     }
 }

@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class LoginController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
     public function __invoke(Request $request)
     {
         $request->validate([
@@ -33,8 +30,8 @@ class LoginController extends Controller
 
         return response()->json([
             'email' => $user->email,
-            'img_foto' => $user->getFoto(),
-            'img_portada' => $user->getPortada(),
+            'url_foto' => $user->getFoto(),
+            'url_portada' => $user->getPortada(),
             'name' => $user->name,
             'role' => $user->getRoleNames(),
             'user_token' => $plainTextToken,

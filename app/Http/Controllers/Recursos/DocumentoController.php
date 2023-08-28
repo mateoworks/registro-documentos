@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Recursos;
 
-use App\Models\Estudiante;
-use App\Http\Requests\StoreEstudianteRequest;
-use App\Http\Requests\UpdateEstudianteRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Documento;
+use App\Http\Requests\StoreDocumentoRequest;
+use App\Http\Requests\UpdateDocumentoRequest;
 
-class EstudianteController extends Controller
+class DocumentoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class EstudianteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEstudianteRequest $request)
+    public function store(StoreDocumentoRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class EstudianteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Estudiante $estudiante)
+    public function show(Documento $documento)
     {
         //
     }
@@ -43,7 +44,7 @@ class EstudianteController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Estudiante $estudiante)
+    public function edit(Documento $documento)
     {
         //
     }
@@ -51,7 +52,7 @@ class EstudianteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEstudianteRequest $request, Estudiante $estudiante)
+    public function update(UpdateDocumentoRequest $request, Documento $documento)
     {
         //
     }
@@ -59,7 +60,7 @@ class EstudianteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Estudiante $estudiante)
+    public function destroy(Documento $documento)
     {
         //
     }

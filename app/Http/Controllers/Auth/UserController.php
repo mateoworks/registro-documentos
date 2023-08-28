@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -54,7 +55,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('view', Auth::user());
+        $this->authorize('ver usuarios', Auth::user());
         $user = User::included()->findOrFail($id);
         return UserResource::make($user);
     }
@@ -64,18 +65,57 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        $this->authorize('update', Auth::user());
-        $user->update($request->all());
+        $this->authorize('editar usuarios', Auth::user());
+        $data = $request->all();
+
+        if ($request->hasFile('url_foto')) {
+            if ($user->url_foto) {
+                Storage::disk('public')->delete($user->url_foto);
+            }
+            $data['url_foto'] = $this->storeFile($request->file('url_foto'), 'perfil');
+        }
+
+        if ($request->hasFile('url_portada')) {
+            if ($user->url_portada) {
+                Storage::disk('public')->delete($user->url_portada);
+            }
+            $data['url_portada'] = $this->storeFile($request->file('url_portada'), 'perfil');
+        }
+
+        if ($request->password) {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+        $user->update($data);
+
         return UserResource::make($user);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user)
     {
-        $this->authorize('delete', Auth::user());
+        $this->authorize('eliminar usuarios', Auth::user());
         $user->delete();
+    }
+
+    public function restore($user)
+    {
+        $this->authorize('restaurar usuarios');
+        $restoredUser = User::withTrashed()->findOrFail($user);
+        $restoredUser->restore();
+        return UserResource::make($restoredUser);
+    }
+
+    public function forceDelete(User $user)
+    {
+        $this->authorize('forzar eliminacion usuarios');
+
+        if ($user->url_foto) {
+            Storage::disk('public')->delete($user->url_foto);
+        }
+        if ($user->url_portada) {
+            Storage::disk('public')->delete($user->url_portada);
+        }
+        $user->forceDelete();
     }
 
     private function storeFile(UploadedFile $file, $folder)

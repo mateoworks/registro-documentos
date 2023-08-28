@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Residencia;
 
-use App\Models\Entrega;
-use App\Http\Requests\StoreEntregaRequest;
-use App\Http\Requests\UpdateEntregaRequest;
+use App\Http\Controllers\Controller;
+use App\Models\EmpresaEstudiante;
+use App\Http\Requests\StoreEmpresaEstudianteRequest;
+use App\Http\Requests\UpdateEmpresaEstudianteRequest;
 
-class EntregaController extends Controller
+class EmpresaEstudianteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class EntregaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEntregaRequest $request)
+    public function store(StoreEmpresaEstudianteRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class EntregaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Entrega $entrega)
+    public function show(EmpresaEstudiante $empresaEstudiante)
     {
         //
     }
@@ -43,7 +44,7 @@ class EntregaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Entrega $entrega)
+    public function edit(EmpresaEstudiante $empresaEstudiante)
     {
         //
     }
@@ -51,7 +52,7 @@ class EntregaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEntregaRequest $request, Entrega $entrega)
+    public function update(UpdateEmpresaEstudianteRequest $request, EmpresaEstudiante $empresaEstudiante)
     {
         //
     }
@@ -59,7 +60,7 @@ class EntregaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Entrega $entrega)
+    public function destroy(EmpresaEstudiante $empresaEstudiante)
     {
         //
     }

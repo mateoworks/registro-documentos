@@ -24,7 +24,7 @@ class Estudiante extends Model
     protected $allowIncluded = ['user', 'carrera', 'empresas', 'periodos', 'proyectosRelacionados'];
     protected $allowFilter = [
         'nombre', 'apellidos', 'numero_control',
-        'domicilio', 'email', 'telefono',
+        'domicilio', 'email', 'telefono', 'carrera_id',
     ];
     protected $allowSort = ['nombre', 'apellidos',];
 

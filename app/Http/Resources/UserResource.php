@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'img_portada' => $this->getPortada(),
             'img_foto' => $this->getFoto(),
             'name' => $this->name,
-            'role' => RoleResource::collection($this->whenLoaded('roles')),
+            'roles' => RoleResource::collection($this->whenLoaded('roles')),
         ];
     }
 }

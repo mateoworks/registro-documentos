@@ -1,0 +1,12 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Mi API
+  description: Descripción de mi API
+paths:
+  /api/users:
+    get:
+      summary: Obtener lista de usuarios
+      responses:
+        "200":
+          description: Lista de usuarios obtenida

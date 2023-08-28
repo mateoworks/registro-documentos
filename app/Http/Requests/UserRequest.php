@@ -29,7 +29,11 @@ class UserRequest extends FormRequest
                 'email',
                 Rule::unique('users', 'email')->ignore($this->route('user')),
             ],
-            'password' => ['required'],
+            'password' => [
+                Rule::requiredIf(function () {
+                    return $this->isMethod('post');
+                }),
+            ],
         ];
     }
 }

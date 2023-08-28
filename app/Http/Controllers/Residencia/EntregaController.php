@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Residencia;
 
-use App\Models\Carrera;
-use App\Http\Requests\StoreCarreraRequest;
-use App\Http\Requests\UpdateCarreraRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Entrega;
+use App\Http\Requests\StoreEntregaRequest;
+use App\Http\Requests\UpdateEntregaRequest;
 
-class CarreraController extends Controller
+class EntregaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class CarreraController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCarreraRequest $request)
+    public function store(StoreEntregaRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class CarreraController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Carrera $carrera)
+    public function show(Entrega $entrega)
     {
         //
     }
@@ -43,7 +44,7 @@ class CarreraController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Carrera $carrera)
+    public function edit(Entrega $entrega)
     {
         //
     }
@@ -51,7 +52,7 @@ class CarreraController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCarreraRequest $request, Carrera $carrera)
+    public function update(UpdateEntregaRequest $request, Entrega $entrega)
     {
         //
     }
@@ -59,7 +60,7 @@ class CarreraController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Carrera $carrera)
+    public function destroy(Entrega $entrega)
     {
         //
     }

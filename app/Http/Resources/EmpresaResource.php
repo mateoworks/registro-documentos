@@ -34,6 +34,9 @@ class EmpresaResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'estudiantes' => EstudianteResource::collection($this->whenLoaded('estudiantes')),
+            'actividad' => $this->whenPivotLoaded('empresa_estudiante', function () {
+                return $this->pivot->actividad;
+            }),
         ];
     }
 }

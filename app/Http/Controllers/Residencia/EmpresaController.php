@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Residencia;
 
-use App\Models\Departamento;
-use App\Http\Requests\StoreDepartamentoRequest;
-use App\Http\Requests\UpdateDepartamentoRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Empresa;
+use App\Http\Requests\StoreEmpresaRequest;
+use App\Http\Requests\UpdateEmpresaRequest;
 
-class DepartamentoController extends Controller
+class EmpresaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class DepartamentoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDepartamentoRequest $request)
+    public function store(StoreEmpresaRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class DepartamentoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Departamento $departamento)
+    public function show(Empresa $empresa)
     {
         //
     }
@@ -43,7 +44,7 @@ class DepartamentoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Departamento $departamento)
+    public function edit(Empresa $empresa)
     {
         //
     }
@@ -51,7 +52,7 @@ class DepartamentoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDepartamentoRequest $request, Departamento $departamento)
+    public function update(UpdateEmpresaRequest $request, Empresa $empresa)
     {
         //
     }
@@ -59,7 +60,7 @@ class DepartamentoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Departamento $departamento)
+    public function destroy(Empresa $empresa)
     {
         //
     }
