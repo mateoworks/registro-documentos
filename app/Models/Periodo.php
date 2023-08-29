@@ -21,6 +21,17 @@ class Periodo extends Model
     protected $allowFilter = ['nombre'];
     protected $allowSort = ['fecha_inicio', 'fecha_termino', 'nombre'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($periodo) {
+            if ($periodo->activo) {
+                static::where('activo', true)->update(['activo' => false]);
+            }
+        });
+    }
+
     public function empresaEstudiantes(): HasMany
     {
         return $this->hasMany(EmpresaEstudiante::class, 'periodo_id');

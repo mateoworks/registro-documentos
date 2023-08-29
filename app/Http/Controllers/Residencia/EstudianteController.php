@@ -7,6 +7,7 @@ use App\Models\Estudiante;
 use App\Http\Requests\StoreEstudianteRequest;
 use App\Http\Requests\UpdateEstudianteRequest;
 use App\Http\Resources\EstudianteResource;
+use App\Models\Periodo;
 
 class EstudianteController extends Controller
 {
@@ -16,6 +17,9 @@ class EstudianteController extends Controller
     public function index()
     {
         $this->authorize('ver estudiantes');
+        /* $periodo = Periodo::where('activo', true)->first();
+        $estudiantes = $periodo->estudiantes;
+        $estudiantes->load('carrera'); */
         $estudiantes = Estudiante::included()->filter()->sort()->getOrPaginate();
         return EstudianteResource::collection($estudiantes);
     }
@@ -26,14 +30,18 @@ class EstudianteController extends Controller
     public function store(StoreEstudianteRequest $request)
     {
         $this->authorize('crear estudiantes');
+        $estudiante = Estudiante::create($request->all());
+        return EstudianteResource::make($estudiante);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Estudiante $estudiante)
+    public function show($estudiante)
     {
         $this->authorize('ver estudiantes', $estudiante);
+        $estudiante = Estudiante::included()->findOrFail($estudiante);
+        return EstudianteResource::make($estudiante);
     }
 
     /**
@@ -42,6 +50,8 @@ class EstudianteController extends Controller
     public function update(UpdateEstudianteRequest $request, Estudiante $estudiante)
     {
         $this->authorize('editar estudiantes', $estudiante);
+        $estudiante->update($request->all());
+        return EstudianteResource::make($estudiante);
     }
 
     /**
@@ -50,5 +60,18 @@ class EstudianteController extends Controller
     public function destroy(Estudiante $estudiante)
     {
         $this->authorize('eliminar estudiantes', $estudiante);
+        $estudiante->delete();
+    }
+    public function restore($estudiante)
+    {
+        $this->authorize('restaurar estudiantes');
+        $restoreEstudiante = Estudiante::withTrashed()->findOrFail($estudiante);
+        $restoreEstudiante->restore();
+        return EstudianteResource::make($restoreEstudiante);
+    }
+    public function forceDelete(Estudiante $estudiante)
+    {
+        $this->authorize('forzar eliminacion estudiantes');
+        $estudiante->forceDelete();
     }
 }

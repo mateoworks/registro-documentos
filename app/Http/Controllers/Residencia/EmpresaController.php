@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Empresa;
 use App\Http\Requests\StoreEmpresaRequest;
 use App\Http\Requests\UpdateEmpresaRequest;
+use App\Http\Resources\EmpresaResource;
 
 class EmpresaController extends Controller
 {
@@ -14,15 +15,9 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $this->authorize('ver empresas');
+        $empresas = Empresa::included()->filter()->sort()->getOrPaginate();
+        return EmpresaResource::collection($empresas);
     }
 
     /**
@@ -30,23 +25,19 @@ class EmpresaController extends Controller
      */
     public function store(StoreEmpresaRequest $request)
     {
-        //
+        $this->authorize('crear empresas');
+        $empresa = Empresa::create($request->all());
+        return EmpresaResource::make($empresa);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Empresa $empresa)
+    public function show($empresa)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Empresa $empresa)
-    {
-        //
+        $this->authorize('ver empresas', $empresa);
+        $empresa = Empresa::included()->findOrFail($empresa);
+        return EmpresaResource::make($empresa);
     }
 
     /**
@@ -54,7 +45,9 @@ class EmpresaController extends Controller
      */
     public function update(UpdateEmpresaRequest $request, Empresa $empresa)
     {
-        //
+        $this->authorize('editar empresas', $empresa);
+        $empresa->update($request->all());
+        return EmpresaResource::make($empresa);
     }
 
     /**
@@ -62,6 +55,19 @@ class EmpresaController extends Controller
      */
     public function destroy(Empresa $empresa)
     {
-        //
+        $this->authorize('eliminar empresas');
+        $empresa->delete();
+    }
+    public function restore($empresa)
+    {
+        $this->authorize('restaurar empresas');
+        $restoredEmpresa = Empresa::withTrashed()->findOrFail($empresa);
+        $restoredEmpresa->restore();
+        return EmpresaResource::make($empresa);
+    }
+    public function forceDelete(Empresa $empresa)
+    {
+        $this->authorize('forzar eliminacion empresas');
+        $empresa->forceDelete();
     }
 }
