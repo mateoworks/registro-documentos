@@ -4,8 +4,10 @@ use App\Http\Controllers\Auth\CurrentUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Estudiante\HomeController;
 use App\Http\Controllers\Recursos\CarreraController;
 use App\Http\Controllers\Recursos\DepartamentoController;
+use App\Http\Controllers\Recursos\DocumentoController;
 use App\Http\Controllers\Recursos\PeriodoController;
 use App\Http\Controllers\Residencia\EstudianteController;
 use Illuminate\Http\Request;
@@ -37,10 +39,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('users/{user}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
 
     Route::apiResource('departamentos', DepartamentoController::class)->names('departamentos');
+    Route::get('departamentos-trashed', [DepartamentoController::class, 'indexTrashed'])->name('departamentos.trashed');
+    Route::patch('departamentos-restore', [DepartamentoController::class, 'restore'])->name('departamentos.restore');
+    Route::delete('departamentos-force-delete', [DepartamentoController::class, 'forceDelete'])->name('departamentos.forceDelete');
 
     Route::apiResource('carreras', CarreraController::class)->names('carreras');
-    Route::patch('carreras/{carrera}/restore', [CarreraController::class, 'restore'])->name('carreras.restore');
-    Route::delete('carreras/{carrera}/force-delete', [CarreraController::class, 'forceDelete'])->name('carreras.forceDelete');
+    Route::get('carreras-trashed', [CarreraController::class, 'indexTrashed'])->name('carreras.trashed');
+    Route::patch('carreras-restore', [CarreraController::class, 'restore'])->name('carreras.restore');
+    Route::delete('carreras-force-delete', [CarreraController::class, 'forceDelete'])->name('carreras.forceDelete');
+
+    Route::apiResource('documentos', DocumentoController::class)->names('documentos');
+    Route::get('documentos-trashed', [DocumentoController::class, 'indexTrashed'])->name('documentos.trashed');
+    Route::patch('documentos-restore', [DocumentoController::class, 'restore'])->name('documentos.restore');
+    Route::delete('documentos-force-delete', [DocumentoController::class, 'forceDelete'])->name('documentos.forceDelete');
+
 
     Route::apiResource('periodos', PeriodoController::class)->names('periodos');
     Route::patch('periodos/{periodo}/restore', [PeriodoController::class, 'restore'])->name('periodos.restore');
@@ -49,4 +61,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
 
     Route::post('logout', LogoutController::class)->name('logout');
+
+    Route::get('estudiante-index', HomeController::class)->name('estudiante.index');
 });

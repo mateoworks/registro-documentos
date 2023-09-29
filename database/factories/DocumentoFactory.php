@@ -19,6 +19,7 @@ class DocumentoFactory extends Factory
     {
         return [
             'nombre_documento' => $this->faker->words(3, true),
+            'fecha_limite' => $this->faker->date(),
         ];
     }
 }

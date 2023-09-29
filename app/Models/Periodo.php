@@ -48,4 +48,11 @@ class Periodo extends Model
         return $this->belongsToMany(Estudiante::class, 'empresa_estudiante', 'periodo_id', 'estudiante_id')
             ->withPivot('actividad');
     }
+
+    public function empresas(): BelongsToMany
+    {
+        return $this->belongsToMany(Empresa::class, 'empresa_estudiante')
+            ->withPivot('actividad', 'periodo_id')
+            ->withTimestamps();
+    }
 }

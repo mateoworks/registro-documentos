@@ -25,6 +25,9 @@ class UpdateDocumentoRequest extends FormRequest
 
         return [
             'nombre_documento' => 'required|string|max:255',
+            'abrev_nombre' => 'nullable|string|max:255',
+            'fecha_limite' => 'required|date',
+            'url_formato' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png'
         ];
     }
 }

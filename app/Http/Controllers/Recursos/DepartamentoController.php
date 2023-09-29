@@ -8,6 +8,7 @@ use App\Http\Requests\StoreDepartamentoRequest;
 use App\Http\Requests\UpdateDepartamentoRequest;
 use App\Http\Resources\DepartamentoResource;
 use App\Http\Resources\DocumentoResource;
+use Illuminate\Http\Request;
 
 class DepartamentoController extends Controller
 {
@@ -61,16 +62,31 @@ class DepartamentoController extends Controller
         $this->authorize('eliminar departamentos', $departamento);
         $departamento->delete();
     }
-    public function restore($departamento)
+    public function restore(Request $request)
     {
-        $this->authorize('restaurar departamentos', $departamento);
-        $restoredDepto = Departamento::withTrashed()->findOrFail($departamento);
-        $restoredDepto->restore();
-        return DepartamentoResource::make($restoredDepto);
+        $this->authorize('restaurar departamentos');
+
+        $ids = $request->input('ids');
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Departamento::whereIn('id', $ids)->restore();
+
+        return response()->json(['message' => 'Restaurado con éxito!']);
     }
-    public function forceDelete(Departamento $departamento)
+    public function forceDelete(Request $request)
     {
-        $this->authorize('forzar eliminacion departamentos', $departamento);
-        $departamento->forceDelete();
+        $this->authorize('forzar eliminacion departamentos');
+        $ids = $request->input('ids');
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Departamento::whereIn('id', $ids)->forceDelete();
+    }
+
+    public function indexTrashed()
+    {
+        $departamentos = Departamento::onlyTrashed()->get();
+        return DepartamentoResource::collection($departamentos);
     }
 }

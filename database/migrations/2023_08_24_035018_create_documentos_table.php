@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('documentos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre_documento');
+            $table->string('abrev_nombre')->nullable();
+            $table->date('fecha_limite')->nullable();
+            $table->string('url_formato')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

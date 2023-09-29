@@ -18,7 +18,7 @@ class CarreraResource extends JsonResource
             'id' => $this->id,
             'departamento_id' => $this->departamento_id,
             'nombre' => $this->nombre,
-            'escudo' => $this->escudo,
+            'escudo' => $this->getEscudo(),
             'clave' => $this->clave,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

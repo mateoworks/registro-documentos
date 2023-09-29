@@ -64,4 +64,9 @@ class Estudiante extends Model
             ->withPivot(['actividad', 'empresa_id', 'periodo_id'])
             ->withTimestamps();
     }
+
+    public function estregas()
+    {
+        return $this->belongsToMany(Entrega::class);
+    }
 }

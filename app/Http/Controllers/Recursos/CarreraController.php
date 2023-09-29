@@ -7,6 +7,7 @@ use App\Models\Carrera;
 use App\Http\Requests\StoreCarreraRequest;
 use App\Http\Requests\UpdateCarreraRequest;
 use App\Http\Resources\CarreraResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -73,22 +74,44 @@ class CarreraController extends Controller
         $carrera->delete();
     }
 
-    public function restore($carrera)
+    public function restore(Request $request)
     {
         $this->authorize('restaurar carreras');
-        $restoredCarrera = Carrera::withTrashed()->findOrFail($carrera);
-        $restoredCarrera->restore();
-        return CarreraResource::make($restoredCarrera);
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Carrera::whereIn('id', $ids)->restore();
+
+        return response()->json(['message' => 'Restauración exitosa']);
     }
 
-    public function forceDelete(Carrera $carrera)
+    public function forceDelete(Request $request)
     {
         $this->authorize('forzar eliminacion carreras');
 
-        if ($carrera->escudo) {
-            Storage::disk('public')->delete($carrera->url_foto);
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
         }
-        $carrera->forceDelete();
+        //Carrera::whereIn('id', $ids)->forceDelete();
+        foreach ($ids as $id) {
+            $carrera = Carrera::withTrashed()->find($id);
+
+            if ($carrera) {
+                $carrera->forceDelete();
+            }
+        }
+
+        return response()->json(['message' => 'Restauración exitosa']);
+    }
+
+    public function indexTrashed()
+    {
+        $departamentos = Carrera::onlyTrashed()->included()->get();
+        return CarreraResource::collection($departamentos);
     }
 
     private function storeFile(UploadedFile $file, $folder)

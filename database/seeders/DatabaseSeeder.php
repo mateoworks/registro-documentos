@@ -35,8 +35,17 @@ class DatabaseSeeder extends Seeder
         ]);
         $user = User::factory()->create(['email' => 'email@email.com']);
         $permissions = Permission::all();
-        $rol = Role::create(['name' => 'admin']);
-        $rol->syncPermissions($permissions);
-        $user->assignRole($rol);
+        $rolAdmin = Role::create(['name' => 'admin']);
+
+        $rolAdmin->syncPermissions($permissions);
+        $user->assignRole($rolAdmin);
+
+        $rolEstudiante = Role::create(['name' => 'estudiante']);
+        $estudiante = User::factory()->create(['email' => 'estudiante@email.com']);
+        $estudiante->assignRole($rolEstudiante);
+
+        $rolCapturista = Role::create(['name' => 'capturista']);
+        $capturista = User::factory()->create(['email' => 'capturista@email.com']);
+        $capturista->assignRole($rolCapturista);
     }
 }

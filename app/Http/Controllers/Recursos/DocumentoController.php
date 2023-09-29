@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Documento;
 use App\Http\Requests\StoreDocumentoRequest;
 use App\Http\Requests\UpdateDocumentoRequest;
+use App\Http\Resources\DocumentoResource;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentoController extends Controller
 {
@@ -14,15 +18,9 @@ class DocumentoController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $this->authorize('ver documentos');
+        $documentos = Documento::included()->filter()->sort()->getOrPaginate();
+        return DocumentoResource::collection($documentos);
     }
 
     /**
@@ -30,23 +28,23 @@ class DocumentoController extends Controller
      */
     public function store(StoreDocumentoRequest $request)
     {
-        //
+        $this->authorize('crear documentos');
+        $data = $request->all();
+        if ($request->hasFile('url_formato')) {
+            $data['url_formato'] = $this->storeFile($request->file('url_formato'), 'formatos');
+        }
+        $documento = Documento::create($data);
+        return DocumentoResource::make($documento);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Documento $documento)
+    public function show($documento)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Documento $documento)
-    {
-        //
+        $this->authorize('ver documentos');
+        $documento = Documento::included()->findOrFail($documento);
+        return DocumentoResource::make($documento);
     }
 
     /**
@@ -54,7 +52,16 @@ class DocumentoController extends Controller
      */
     public function update(UpdateDocumentoRequest $request, Documento $documento)
     {
-        //
+        $this->authorize('editar documentos', $documento);
+        $data = $request->all();
+        if ($request->hasFile('url_formato')) {
+            if ($documento->url_formato) {
+                Storage::disk('public')->delete($documento->url_formato);
+            }
+            $data['url_formato'] = $this->storeFile($request->file('url_formato'), 'formatos');
+        }
+        $documento->update($data);
+        return DocumentoResource::make($documento);
     }
 
     /**
@@ -62,6 +69,52 @@ class DocumentoController extends Controller
      */
     public function destroy(Documento $documento)
     {
-        //
+        $this->authorize('eliminar documentos', $documento);
+        $documento->delete();
+    }
+
+    public function forceDelete(Request $request)
+    {
+        $this->authorize('forzar eliminacion documentos');
+
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        foreach ($ids as $id) {
+            $documento = Documento::withTrashed()->find($id);
+
+            if ($documento) {
+                $documento->forceDelete();
+            }
+        }
+
+        return response()->json(['message' => 'Restauración exitosa']);
+    }
+
+    public function restore(Request $request)
+    {
+        $this->authorize('restaurar documentos');
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Documento::whereIn('id', $ids)->restore();
+
+        return response()->json(['message' => 'Restauración exitosa']);
+    }
+
+    public function indexTrashed()
+    {
+        $departamentos = Documento::onlyTrashed()->included()->get();
+        return DocumentoResource::collection($departamentos);
+    }
+
+    private function storeFile(UploadedFile $file, $folder)
+    {
+        $filePath = $file->store($folder, 'public');
+        return $filePath;
     }
 }
