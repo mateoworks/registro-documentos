@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -97,25 +98,40 @@ class UserController extends Controller
         $user->delete();
     }
 
-    public function restore($user)
+    public function restore(Request $request)
     {
-        $this->authorize('restaurar usuarios');
-        $restoredUser = User::withTrashed()->findOrFail($user);
-        $restoredUser->restore();
-        return UserResource::make($restoredUser);
+        $this->authorize('restaurar usuario');
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        User::whereIn('id', $ids)->restore();
+        return response()->json(['message' => 'Restauración exitosa']);
     }
 
-    public function forceDelete(User $user)
+    public function forceDelete(Request $request)
     {
         $this->authorize('forzar eliminacion usuarios');
 
-        if ($user->url_foto) {
-            Storage::disk('public')->delete($user->url_foto);
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
         }
-        if ($user->url_portada) {
-            Storage::disk('public')->delete($user->url_portada);
+        foreach ($ids as $id) {
+            $carrera = User::withTrashed()->find($id);
+            if ($carrera) {
+                $carrera->forceDelete();
+            }
         }
-        $user->forceDelete();
+        return response()->json(['message' => 'Eliminación exitosa']);
+    }
+
+    public function indexTrashed()
+    {
+        $users = User::onlyTrashed()->included()->get();
+        return UserResource::collection($users);
     }
 
     private function storeFile(UploadedFile $file, $folder)

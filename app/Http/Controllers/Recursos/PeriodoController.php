@@ -7,6 +7,7 @@ use App\Models\Periodo;
 use App\Http\Requests\StorePeriodoRequest;
 use App\Http\Requests\UpdatePeriodoRequest;
 use App\Http\Resources\PeriodoResource;
+use Illuminate\Http\Request;
 
 class PeriodoController extends Controller
 {
@@ -58,16 +59,34 @@ class PeriodoController extends Controller
         $this->authorize('eliminar periodos');
         $periodo->delete();
     }
-    public function restore($periodo)
-    {
-        $this->authorize('restaurar periodos');
-        $restoredPeriodo = Periodo::withTrashed()->findOrFail($periodo);
-        $restoredPeriodo->restore();
-        return PeriodoResource::make($restoredPeriodo);
-    }
-    public function forceDelete(Periodo $periodo)
+
+    public function forceDelete(Request $request)
     {
         $this->authorize('forzar eliminacion periodos');
-        $periodo->forceDelete();
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Periodo::whereIn('id', $ids)->restore();
+        return response()->json(['message' => 'Eliminación completada']);
+    }
+
+    public function restore(Request $request)
+    {
+        $this->authorize('restaurar periodos');
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Periodo::whereIn('id', $ids)->restore();
+        return response()->json(['message' => 'Restauración exitosa']);
+    }
+
+    public function indexTrashed()
+    {
+        $periodos = Periodo::onlyTrashed()->get();
+        return PeriodoResource::collection($periodos);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Empresa;
 use App\Http\Requests\StoreEmpresaRequest;
 use App\Http\Requests\UpdateEmpresaRequest;
 use App\Http\Resources\EmpresaResource;
+use Illuminate\Http\Request;
 
 class EmpresaController extends Controller
 {
@@ -58,16 +59,33 @@ class EmpresaController extends Controller
         $this->authorize('eliminar empresas');
         $empresa->delete();
     }
-    public function restore($empresa)
+    public function restore(Request $request)
     {
         $this->authorize('restaurar empresas');
-        $restoredEmpresa = Empresa::withTrashed()->findOrFail($empresa);
-        $restoredEmpresa->restore();
-        return EmpresaResource::make($empresa);
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Empresa::whereIn('id', $ids)->restore();
+
+        return response()->json(['message' => 'Restauración exitosa']);
     }
-    public function forceDelete(Empresa $empresa)
+    public function forceDelete(Request $request)
     {
         $this->authorize('forzar eliminacion empresas');
-        $empresa->forceDelete();
+        $ids = $request->input('ids');
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        Empresa::whereIn('id', $ids)->restore();
+        return response()->json(['message' => 'Restaurado con éxito!']);
+    }
+
+    public function indexTrashed()
+    {
+        $empresas = Empresa::onlyTrashed()->get();
+        return EmpresaResource::collection($empresas);
     }
 }

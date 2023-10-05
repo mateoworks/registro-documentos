@@ -14,7 +14,7 @@ class Periodo extends Model
     use HasFactory, SoftDeletes, ApiTrait;
 
     protected $fillable = [
-        'nombre', 'fecha_inicio', 'fecha_termino',
+        'nombre', 'fecha_inicio', 'fecha_termino', 'activo',
     ];
 
     protected $allowIncluded = ['empresaEstudiantes', 'estudiantes'];

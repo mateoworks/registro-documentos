@@ -105,7 +105,7 @@ class CarreraController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Restauración exitosa']);
+        return response()->json(['message' => 'Eliminación exitosa']);
     }
 
     public function indexTrashed()
