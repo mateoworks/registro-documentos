@@ -44,7 +44,46 @@ class DatabaseSeeder extends Seeder
         $estudiante = User::factory()->create(['email' => 'estudiante@email.com']);
         $estudiante->assignRole($rolEstudiante);
 
+        $permissionCapturista = [
+            'ver usuarios',
+            'crear usuarios',
+            'editar usuarios',
+            'eliminar usuarios',
+            'ver departamentos',
+            'crear departamentos',
+            'editar departamentos',
+            'eliminar departamentos',
+            'ver carreras',
+            'crear carreras',
+            'editar carreras',
+            'eliminar carreras',
+            'ver documentos',
+            'crear documentos',
+            'editar documentos',
+            'eliminar documentos',
+            'ver empresas',
+            'crear empresas',
+            'editar empresas',
+            'eliminar empresas',
+            'ver entregas',
+            'crear entregas',
+            'editar entregas',
+            'eliminar entregas',
+            'ver estudiantes',
+            'crear estudiantes',
+            'editar estudiantes',
+            'eliminar estudiantes',
+            'ver periodos',
+            'crear periodos',
+            'editar periodos',
+            'eliminar periodos',
+            'ver proyectos',
+            'crear proyectos',
+            'editar proyectos',
+            'eliminar proyectos',
+        ];
         $rolCapturista = Role::create(['name' => 'capturista']);
+        $rolCapturista->syncPermissions($permissionCapturista);
         $capturista = User::factory()->create(['email' => 'capturista@email.com']);
         $capturista->assignRole($rolCapturista);
     }

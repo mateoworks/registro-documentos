@@ -19,7 +19,9 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('ver usuarios', Auth::user());
-        $users = User::included()->filter()->sort()->getOrPaginate();
+        $users = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'capturista']);
+        })->included()->filter()->sort()->getOrPaginate();
         return UserResource::collection($users);
     }
 
@@ -38,15 +40,10 @@ class UserController extends Controller
             $data['url_foto'] = $this->storeFile($request->file('url_foto'), 'perfil');
         }
 
-        if ($request->hasFile('url_portada')) {
-            $data['url_portada'] = $this->storeFile($request->file('url_portada'), 'portada');
-        }
-
         $user = User::create($data);
         if ($request->get('rol')) {
             $user->assignRole($request->rol);
         }
-
         $user->load('roles');
         return UserResource::make($user);
     }
@@ -76,17 +73,12 @@ class UserController extends Controller
             $data['url_foto'] = $this->storeFile($request->file('url_foto'), 'perfil');
         }
 
-        if ($request->hasFile('url_portada')) {
-            if ($user->url_portada) {
-                Storage::disk('public')->delete($user->url_portada);
-            }
-            $data['url_portada'] = $this->storeFile($request->file('url_portada'), 'perfil');
-        }
-
         if ($request->password) {
             $data['password'] = bcrypt($data['password']);
         }
-
+        if ($request->get('rol')) {
+            $user->syncRoles($request->rol);
+        }
         $user->update($data);
 
         return UserResource::make($user);
@@ -100,7 +92,7 @@ class UserController extends Controller
 
     public function restore(Request $request)
     {
-        $this->authorize('restaurar usuario');
+        $this->authorize('restaurar usuarios');
         $ids = $request->input('ids');
 
         if (!is_array($ids)) {
@@ -130,7 +122,13 @@ class UserController extends Controller
 
     public function indexTrashed()
     {
-        $users = User::onlyTrashed()->included()->get();
+        $users = User::withTrashed()
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['admin', 'capturista']);
+            })
+            ->onlyTrashed()
+            ->included()
+            ->get();
         return UserResource::collection($users);
     }
 

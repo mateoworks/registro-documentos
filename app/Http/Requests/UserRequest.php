@@ -34,6 +34,13 @@ class UserRequest extends FormRequest
                     return $this->isMethod('post');
                 }),
             ],
+            'url_foto' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg,gif',
+                'max:2048'
+            ],
+            'rol' => ['required']
         ];
     }
 }

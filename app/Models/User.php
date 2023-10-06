@@ -61,6 +61,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::forceDeleted(function ($user) {
+            if ($user->url_foto) {
+                if (Storage::disk('public')->exists($user->url_foto))
+                    Storage::disk('public')->delete($user->url_foto);
+            }
+            if ($user->url_portada) {
+                if (Storage::disk('public')->exists($user->url_portada))
+                    Storage::disk('public')->delete($user->url_portada);
+            }
+        });
+    }
+
     public function getFoto()
     {
         if ($this->url_foto) {
