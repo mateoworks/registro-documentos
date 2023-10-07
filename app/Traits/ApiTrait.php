@@ -25,11 +25,13 @@ trait ApiTrait{
 
         $filters = request('filter');
         $allowFilter = collect($this->allowFilter);
-        foreach($filters as $filter => $value){
-            if($allowFilter->contains($filter)){
-                $query->where($filter,'LIKE' , "%$value%");
+        $query->where(function ($query) use ($filters, $allowFilter) {
+        foreach ($filters as $filter => $value) {
+            if ($allowFilter->contains($filter)) {
+                $query->orWhere($filter, 'LIKE', "%$value%");
             }
         }
+    });
     }
 
     public function scopeSort(Builder $query){

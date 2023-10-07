@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEstudianteRequest extends FormRequest
@@ -24,17 +25,27 @@ class UpdateEstudianteRequest extends FormRequest
         $estudianteId = $this->route('estudiante');
 
         return [
-            'user_id' => 'required|uuid|exists:users,id',
             'carrera_id' => 'required|exists:carreras,id',
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'numero_control' => "required|string|unique:estudiantes,numero_control,$estudianteId|max:255",
+            'numero_control' => [
+                "required",
+                "string",
+                Rule::unique('estudiantes', 'numero_control')->ignore($this->route('estudiantes')),
+                "max:255"
+            ],
             'domicilio' => 'nullable|string|max:255',
-            'email' => "required|email|unique:estudiantes,email,$estudianteId|max:255",
-            'seguridad_social' => 'required|string|max:255',
+            'email' => [
+                "required",
+                "email",
+                Rule::unique('estudiantes', 'email')->ignore($this->route('estudiantes')),
+                "max:255"
+            ],
+            'seguridad_social' => 'nullable|string|max:255',
             'no_seguridad_social' => 'nullable|string|max:255',
-            'ciudad' => 'required|string|max:255',
+            'ciudad' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:255',
+            'password' => 'nullable|string|max:255',
         ];
     }
 }

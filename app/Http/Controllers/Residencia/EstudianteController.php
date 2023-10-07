@@ -8,6 +8,7 @@ use App\Http\Requests\StoreEstudianteRequest;
 use App\Http\Requests\UpdateEstudianteRequest;
 use App\Http\Resources\EstudianteResource;
 use App\Models\Periodo;
+use App\Models\User;
 
 class EstudianteController extends Controller
 {
@@ -30,7 +31,20 @@ class EstudianteController extends Controller
     public function store(StoreEstudianteRequest $request)
     {
         $this->authorize('crear estudiantes');
-        $estudiante = Estudiante::create($request->all());
+        $data = $request->all();
+        if ($request->password) {
+            $data['password'] = bcrypt($data['password']);
+        } else {
+            $data['password'] = bcrypt('password');
+        }
+        $data['name'] = $request->nombre . ' ' . $request->apellidos;
+
+        $user = User::create($data);
+        $user->assignRole('estudiante');
+
+        $data['user_id'] = $user->id;
+        $estudiante = Estudiante::create($data);
+
         return EstudianteResource::make($estudiante);
     }
 
@@ -50,7 +64,17 @@ class EstudianteController extends Controller
     public function update(UpdateEstudianteRequest $request, Estudiante $estudiante)
     {
         $this->authorize('editar estudiantes', $estudiante);
-        $estudiante->update($request->all());
+        $data = $request->all();
+        if ($request->password) {
+            $data['password'] = bcrypt($data['password']);
+        } else {
+            $data['password'] = bcrypt('password');
+        }
+        $data['name'] = $request->nombre . ' ' . $request->apellidos;
+        $user = User::findOrFail($estudiante->user_id);
+        $user->update($data);
+        $estudiante->update($data);
+
         return EstudianteResource::make($estudiante);
     }
 

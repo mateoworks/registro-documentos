@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('numero_control')->unique();
             $table->string('domicilio')->nullable();
             $table->string('email');
-            $table->string('seguridad_social');
+            $table->string('seguridad_social')->nullable();
             $table->string('no_seguridad_social')->nullable();
-            $table->string('ciudad');
+            $table->string('ciudad')->nullable();
             $table->string('telefono')->nullable();
             $table->timestamps();
             $table->softDeletes();

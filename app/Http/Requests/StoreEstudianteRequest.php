@@ -22,17 +22,17 @@ class StoreEstudianteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|uuid|exists:users,id',
             'carrera_id' => 'required|exists:carreras,id',
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
             'numero_control' => 'required|string|unique:estudiantes,numero_control|max:255',
             'domicilio' => 'nullable|string|max:255',
-            'email' => 'required|email|unique:estudiantes,email|max:255',
-            'seguridad_social' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email|max:255',
+            'seguridad_social' => 'nullable|string|max:255',
             'no_seguridad_social' => 'nullable|string|max:255',
-            'ciudad' => 'required|string|max:255',
+            'ciudad' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:255',
+            'password' => 'nullable|string|max:255',
         ];
     }
 }

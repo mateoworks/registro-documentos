@@ -67,6 +67,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('empresas-force-delete', [EmpresaController::class, 'forceDelete'])->name('empresas.forceDelete');
 
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
+    Route::get('estudiantes-trashed', [EstudianteController::class, 'indexTrashed'])->name('estudiantes.trashed');
+    Route::patch('estudiantes-restore', [EstudianteController::class, 'restore'])->name('estudiantes.restore');
+    Route::delete('estudiantes-force-delete', [EstudianteController::class, 'forceDelete'])->name('estudiantes.forceDelete');
+
+    Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
 
     Route::post('logout', LogoutController::class)->name('logout');
 
