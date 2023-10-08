@@ -11,6 +11,7 @@ use App\Http\Controllers\Recursos\DocumentoController;
 use App\Http\Controllers\Recursos\PeriodoController;
 use App\Http\Controllers\Residencia\EmpresaController;
 use App\Http\Controllers\Residencia\EstudianteController;
+use App\Http\Controllers\Residencia\ResidenciaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -72,6 +73,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('estudiantes-force-delete', [EstudianteController::class, 'forceDelete'])->name('estudiantes.forceDelete');
 
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
+
+    Route::get('periodo-activo', [ResidenciaController::class, 'periodoActivo'])->name('residencia.periodo');
+    Route::patch('asignar-residencia/{estudiante}', [ResidenciaController::class, 'asignarResidencia'])
+        ->name('residencia.asignar');
+    Route::get('empresas-select', [ResidenciaController::class, 'empresas'])
+        ->name('residencia.autocompleteempresa');
 
     Route::post('logout', LogoutController::class)->name('logout');
 

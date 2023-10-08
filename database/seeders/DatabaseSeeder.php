@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
             PeriodoSeeder::class,
             EmpresaSeeder::class,
             EstudianteSeeder::class,
-            ProyectoSeeder::class,
             PermissionSeeder::class,
         ]);
         $user = User::factory()->create(['email' => 'email@email.com']);

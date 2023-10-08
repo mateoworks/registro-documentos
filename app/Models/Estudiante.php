@@ -41,7 +41,7 @@ class Estudiante extends Model
     public function empresas(): BelongsToMany
     {
         return $this->belongsToMany(Empresa::class, 'empresa_estudiante')
-            ->withPivot(['actividad', 'proyecto_id', 'periodo_id'])
+            ->withPivot(['actividad', 'proyecto', 'periodo_id'])
             ->withTimestamps();
     }
 
@@ -49,19 +49,6 @@ class Estudiante extends Model
     {
         return $this->belongsToMany(Periodo::class, 'empresa_estudiante', 'estudiante_id', 'periodo_id')
             ->distinct()
-            ->withTimestamps();
-    }
-
-    public function proyectos(): HasMany
-    {
-        return $this->hasMany(Proyecto::class);
-    }
-
-    public function proyectosRelacionados()
-    {
-        return $this->belongsToMany(Proyecto::class, 'empresa_estudiante', 'estudiante_id', 'proyecto_id')
-            ->wherePivot('actividad', '=', 'proyecto')
-            ->withPivot(['actividad', 'empresa_id', 'periodo_id'])
             ->withTimestamps();
     }
 

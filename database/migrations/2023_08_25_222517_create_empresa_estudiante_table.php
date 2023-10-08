@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->uuid('empresa_id');
             $table->uuid('estudiante_id');
-            $table->uuid('proyecto_id');
             $table->unsignedBigInteger('periodo_id');
+            $table->string('proyecto');
             $table->string('actividad');
             $table->timestamps();
 
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
             $table->foreign('estudiante_id')->references('id')->on('estudiantes')->onDelete('cascade');
-            $table->foreign('proyecto_id')->references('id')->on('proyectos')->onDelete('cascade');
             $table->foreign('periodo_id')->references('id')->on('periodos')->onDelete('cascade');
         });
     }
