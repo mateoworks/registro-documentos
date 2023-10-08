@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Periodo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -31,8 +32,8 @@ class EstudianteResource extends JsonResource
             'updated_at' => $this->updated_at,
             'user' => UserResource::make($this->whenLoaded('user')),
             'carrera' => CarreraResource::make($this->whenLoaded('carrera')),
-            'proyectos' => ProyectoResource::collection($this->whenLoaded('proyectos')),
             'empresas' => EmpresaResource::collection($this->whenLoaded('empresas')),
+            'periodos' => PeriodoResource::collection($this->whenLoaded('periodos')),
             'actividad' => $this->whenPivotLoaded('empresa_estudiante', function () {
                 return $this->pivot->actividad;
             }),

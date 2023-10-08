@@ -21,7 +21,7 @@ class Estudiante extends Model
         'domicilio', 'email', 'seguridad_social', 'no_seguridad_social', 'ciudad', 'telefono',
     ];
 
-    protected $allowIncluded = ['user', 'carrera', 'empresas', 'periodos', 'proyectosRelacionados'];
+    protected $allowIncluded = ['user', 'carrera', 'empresas', 'periodos'];
     protected $allowFilter = [
         'nombre', 'apellidos', 'numero_control',
         'domicilio', 'email', 'telefono', 'carrera_id',
@@ -45,10 +45,10 @@ class Estudiante extends Model
             ->withTimestamps();
     }
 
-    public function periodos(): BelongsToMany
+    public function periodos()
     {
         return $this->belongsToMany(Periodo::class, 'empresa_estudiante', 'estudiante_id', 'periodo_id')
-            ->distinct()
+            ->withPivot('proyecto', 'actividad')
             ->withTimestamps();
     }
 
