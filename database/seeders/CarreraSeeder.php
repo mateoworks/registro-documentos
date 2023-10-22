@@ -13,22 +13,28 @@ class CarreraSeeder extends Seeder
      */
     public function run(): void
     {
-        // Departamento de Ingenierías
         Carrera::factory()->create([
             'nombre' => 'Ingeniería en Agronomía',
-            'departamento_id' => 1, // Ajusta el ID del Departamento de Ingenierías
+            'departamento_id' => 1,
+            'color' => '#008000',
+            'abrev' => 'IA',
+            'escudo' => 'escudo/ia.png',
         ]);
 
-        // Departamento de Ciencias Básicas
         Carrera::factory()->create([
             'nombre' => 'Ingeniería en Sistemas Computacionales',
-            'departamento_id' => 2, // Ajusta el ID del Departamento de Ciencias Básicas
+            'departamento_id' => 2,
+            'color' => '#3b83bd',
+            'abrev' => 'ISC',
+            'escudo' => 'escudo/isc.png',
         ]);
 
-        // Departamento de Gestión Empresarial
         Carrera::factory()->create([
             'nombre' => 'Ingeniería en Gestión Empresarial',
-            'departamento_id' => 3, // Ajusta el ID del Departamento de Gestión Empresarial
+            'departamento_id' => 3,
+            'color' => '#FFC/00',
+            'abrev' => 'IGE',
+            'escudo' => 'escudo/ige.png',
         ]);
     }
 }

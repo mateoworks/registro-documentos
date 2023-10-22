@@ -4,14 +4,18 @@ use App\Http\Controllers\Auth\CurrentUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Estudiante\HomeController;
 use App\Http\Controllers\Recursos\CarreraController;
 use App\Http\Controllers\Recursos\DepartamentoController;
 use App\Http\Controllers\Recursos\DocumentoController;
 use App\Http\Controllers\Recursos\PeriodoController;
 use App\Http\Controllers\Residencia\EmpresaController;
+use App\Http\Controllers\Residencia\EntregaController;
 use App\Http\Controllers\Residencia\EstudianteController;
 use App\Http\Controllers\Residencia\ResidenciaController;
+use App\Http\Controllers\Residencia\UtilController;
+use App\Http\Controllers\TablaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +71,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('empresas-restore', [EmpresaController::class, 'restore'])->name('empresas.restore');
     Route::delete('empresas-force-delete', [EmpresaController::class, 'forceDelete'])->name('empresas.forceDelete');
 
+    Route::apiResource('entregas', EntregaController::class)->names('entregas');
+    Route::get('entregas-trashed', [EntregaController::class, 'indexTrashed'])->name('entregas.trashed');
+    Route::patch('entregas-restore', [EntregaController::class, 'restore'])->name('entregas.restore');
+    Route::delete('entregas-force-delete', [EntregaController::class, 'forceDelete'])->name('entregas.forceDelete');
+
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
     Route::get('estudiantes-trashed', [EstudianteController::class, 'indexTrashed'])->name('estudiantes.trashed');
     Route::patch('estudiantes-restore', [EstudianteController::class, 'restore'])->name('estudiantes.restore');
@@ -83,4 +92,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', LogoutController::class)->name('logout');
 
     Route::get('estudiante-index', HomeController::class)->name('estudiante.index');
+    //Dashboard
+    Route::get('num-residentes', [DashboardController::class, 'residentes'])->name('dashboard.numresidentes');
+    Route::get('num-residentes-carrera', [DashboardController::class, 'estudiantesPorCarrera'])->name('dashboard.residentesporcarrera');
+    Route::get('tabla', [TablaController::class, 'obtenerDatos'])->name('dashboard.tabla');
+
+    //Otros
+    Route::get('estudiante-autompletar', [UtilController::class, 'autocompletarEstudiante'])
+        ->name('estudiantes.autocompletar');
 });

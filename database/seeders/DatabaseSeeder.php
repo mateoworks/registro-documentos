@@ -80,6 +80,10 @@ class DatabaseSeeder extends Seeder
             'crear proyectos',
             'editar proyectos',
             'eliminar proyectos',
+            'ver entregas',
+            'crear entregas',
+            'editar entregas',
+            'eliminar entregas',
         ];
         $rolCapturista = Role::create(['name' => 'capturista']);
         $rolCapturista->syncPermissions($permissionCapturista);

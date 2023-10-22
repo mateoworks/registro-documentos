@@ -24,9 +24,8 @@ class StoreEntregaRequest extends FormRequest
         return [
             'estudiante_id' => 'required|uuid|exists:estudiantes,id',
             'documento_id' => 'required|exists:documentos,id',
-            'url_documento' => 'nullable|string|max:255',
+            'url_documento' => 'nullable|file|mimes:pdf,doc,docx',
             'fecha_entrega' => 'required|date',
-            'estado' => 'required|boolean',
         ];
     }
 }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('escudo')->nullable();
             $table->string('clave');
+            $table->string('color')->nullable();
+            $table->string('abrev')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

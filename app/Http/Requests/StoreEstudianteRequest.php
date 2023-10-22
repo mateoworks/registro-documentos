@@ -33,6 +33,7 @@ class StoreEstudianteRequest extends FormRequest
             'ciudad' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:255',
             'password' => 'nullable|string|max:255',
+            'url_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

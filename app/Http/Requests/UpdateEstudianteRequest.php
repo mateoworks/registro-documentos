@@ -31,14 +31,14 @@ class UpdateEstudianteRequest extends FormRequest
             'numero_control' => [
                 "required",
                 "string",
-                Rule::unique('estudiantes', 'numero_control')->ignore($this->route('estudiantes')),
+                Rule::unique('estudiantes', 'numero_control')->ignore($estudianteId),
                 "max:255"
             ],
             'domicilio' => 'nullable|string|max:255',
             'email' => [
                 "required",
                 "email",
-                Rule::unique('estudiantes', 'email')->ignore($this->route('estudiantes')),
+                Rule::unique('estudiantes', 'email')->ignore($estudianteId),
                 "max:255"
             ],
             'seguridad_social' => 'nullable|string|max:255',
@@ -46,6 +46,7 @@ class UpdateEstudianteRequest extends FormRequest
             'ciudad' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:255',
             'password' => 'nullable|string|max:255',
+            'url_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

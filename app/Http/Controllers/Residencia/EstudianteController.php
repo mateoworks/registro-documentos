@@ -7,8 +7,10 @@ use App\Models\Estudiante;
 use App\Http\Requests\StoreEstudianteRequest;
 use App\Http\Requests\UpdateEstudianteRequest;
 use App\Http\Resources\EstudianteResource;
-use App\Models\Periodo;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class EstudianteController extends Controller
 {
@@ -21,7 +23,11 @@ class EstudianteController extends Controller
         /* $periodo = Periodo::where('activo', true)->first();
         $estudiantes = $periodo->estudiantes;
         $estudiantes->load('carrera'); */
-        $estudiantes = Estudiante::included()->filter()->sort()->getOrPaginate();
+        $estudiantes = Estudiante::included()
+            ->filter()
+            ->orderBy('created_at', 'DESC')
+            ->sort()
+            ->getOrPaginate();
         return EstudianteResource::collection($estudiantes);
     }
 
@@ -38,6 +44,10 @@ class EstudianteController extends Controller
             $data['password'] = bcrypt('password');
         }
         $data['name'] = $request->nombre . ' ' . $request->apellidos;
+
+        if ($request->hasFile('url_foto')) {
+            $data['url_foto'] = $this->storeFile($request->file('url_foto'), 'perfil');
+        }
 
         $user = User::create($data);
         $user->assignRole('estudiante');
@@ -70,8 +80,17 @@ class EstudianteController extends Controller
         } else {
             $data['password'] = bcrypt('password');
         }
+
         $data['name'] = $request->nombre . ' ' . $request->apellidos;
         $user = User::findOrFail($estudiante->user_id);
+
+        if ($request->hasFile('url_foto')) {
+            if ($user->url_foto) {
+                Storage::disk('public')->delete($user->url_foto);
+            }
+            $data['url_foto'] = $this->storeFile($request->file('url_foto'), 'perfil');
+        }
+
         $user->update($data);
         $estudiante->update($data);
 
@@ -97,5 +116,11 @@ class EstudianteController extends Controller
     {
         $this->authorize('forzar eliminacion estudiantes');
         $estudiante->forceDelete();
+    }
+
+    private function storeFile(UploadedFile $file, $folder)
+    {
+        $filePath = $file->store($folder, 'public');
+        return $filePath;
     }
 }

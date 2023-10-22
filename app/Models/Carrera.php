@@ -14,7 +14,7 @@ class Carrera extends Model
     use HasFactory, SoftDeletes, ApiTrait;
 
     protected $fillable = [
-        'departamento_id', 'nombre', 'escudo', 'clave',
+        'departamento_id', 'nombre', 'escudo', 'clave', 'color', 'abrev'
     ];
 
     protected $allowIncluded = ['departamento', 'estudiantes'];

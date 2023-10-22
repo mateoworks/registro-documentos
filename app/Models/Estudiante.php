@@ -45,6 +45,13 @@ class Estudiante extends Model
             ->withTimestamps();
     }
 
+    public function periodosActivos()
+    {
+        return $this->hasMany(Periodo::class, 'empresa_estudiante', 'estudiante_id', 'periodo_id')
+            ->where('activo', true)
+            ->withPivot('proyecto', 'actividad');
+    }
+
     public function periodos()
     {
         return $this->belongsToMany(Periodo::class, 'empresa_estudiante', 'estudiante_id', 'periodo_id')

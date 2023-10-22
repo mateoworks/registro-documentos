@@ -24,16 +24,28 @@ class ResidenciaController extends Controller
 
     public function asignarResidencia(Request $request, Estudiante $estudiante)
     {
-
         $periodo = Periodo::where('activo', true)->first();
-        Log::info('Empresa ' . $periodo->id);
+
+        // Validar si el estudiante ya tiene una asignación de residencia en el período activo
+        $existingAssignment = $estudiante->empresas()
+            ->where('periodo_id', $periodo->id)
+            ->where('actividad', 'Residencia profesional')
+            ->count();
+
+        if ($existingAssignment > 0) {
+            return response()->json(['message' => 'El estudiante ya tiene una asignación de residencia en este período activo'], 422);
+        }
+
+        // Si no hay una asignación existente, agregar la asignación
         $estudiante->empresas()->attach($request->empresa_id, [
             'proyecto' => $request->proyecto,
             'periodo_id' => $periodo->id,
             'actividad' => 'Residencia profesional',
         ]);
+
         return response()->json(['message' => 'La asignación de residencia fue exitosa'], 200);
     }
+
 
     public function empresas(Request $request)
     {

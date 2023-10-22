@@ -26,6 +26,8 @@ class StoreCarreraRequest extends FormRequest
             'nombre' => 'required|string|max:255',
             'escudo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'clave' => 'required|string|max:255',
+            'color' => 'nullable',
+            'abrev' => 'nullable',
         ];
     }
 }
