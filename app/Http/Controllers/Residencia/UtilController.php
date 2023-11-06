@@ -28,4 +28,23 @@ class UtilController extends Controller
 
         return response()->json($results);
     }
+
+    public function documentosPendientes(Request $request)
+    {
+        $studentId = $request->id;
+        $sql = "
+        SELECT
+            d.id AS id,
+            d.nombre_documento AS nombre
+        FROM documentos AS d
+        LEFT JOIN entregas AS e
+            ON d.id = e.documento_id
+            AND e.estudiante_id = :student_id
+        WHERE e.id IS NULL
+        ORDER BY d.id;
+        ";
+
+        $documentosNoEntregados = DB::select($sql, ['student_id' => $studentId]);
+        return response()->json($documentosNoEntregados);
+    }
 }

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->timestamp('fecha_entrega');
             $table->boolean('estado')->default(false);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('estudiante_id')->references('id')->on('estudiantes')->onDelete('cascade');
             $table->foreign('documento_id')->references('id')->on('documentos')->onDelete('cascade');

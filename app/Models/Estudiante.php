@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Estudiante extends Model
 {
-    use HasFactory, HasUuids, ApiTrait;
+    use HasFactory, HasUuids, ApiTrait, SoftDeletes;
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
@@ -28,6 +30,23 @@ class Estudiante extends Model
     ];
     protected $allowSort = ['nombre', 'apellidos',];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::forceDeleted(function ($estudiante) {
+            if ($estudiante->user->url_foto) {
+                if (Storage::disk('public')->exists($estudiante->user->url_foto))
+                    Storage::disk('public')->delete($estudiante->user->url_foto);
+            }
+            if ($estudiante->url_portada) {
+                if (Storage::disk('public')->exists($estudiante->user->url_portada))
+                    Storage::disk('public')->delete($estudiante->user->url_portada);
+            }
+            $estudiante->user->forceDelete();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -37,6 +56,7 @@ class Estudiante extends Model
     {
         return $this->belongsTo(Carrera::class);
     }
+
 
     public function empresas(): BelongsToMany
     {

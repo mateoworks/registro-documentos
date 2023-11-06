@@ -8,7 +8,9 @@ use App\Http\Requests\StoreEstudianteRequest;
 use App\Http\Requests\UpdateEstudianteRequest;
 use App\Http\Resources\EstudianteResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -77,8 +79,6 @@ class EstudianteController extends Controller
         $data = $request->all();
         if ($request->password) {
             $data['password'] = bcrypt($data['password']);
-        } else {
-            $data['password'] = bcrypt('password');
         }
 
         $data['name'] = $request->nombre . ' ' . $request->apellidos;
@@ -105,17 +105,66 @@ class EstudianteController extends Controller
         $this->authorize('eliminar estudiantes', $estudiante);
         $estudiante->delete();
     }
-    public function restore($estudiante)
+
+    public function indexTrashed()
+    {
+        $estudiantes = Estudiante::onlyTrashed()->included()->getOrPaginate();
+        return EstudianteResource::collection($estudiantes);
+    }
+    public function restore(Request $request)
     {
         $this->authorize('restaurar estudiantes');
-        $restoreEstudiante = Estudiante::withTrashed()->findOrFail($estudiante);
+        $restoreEstudiante = Estudiante::withTrashed()->findOrFail($request->ids);
         $restoreEstudiante->restore();
         return EstudianteResource::make($restoreEstudiante);
     }
-    public function forceDelete(Estudiante $estudiante)
+    public function forceDelete(Request $request)
     {
         $this->authorize('forzar eliminacion estudiantes');
+        $estudiante = Estudiante::withTrashed()->findOrFail($request->ids);
         $estudiante->forceDelete();
+    }
+
+    public function buscarEstudiante(Request $request)
+    {
+        $term = $request->query('q');
+        $urlApp = config('app.url') . '/storage/';
+
+        $sql = "
+            SELECT
+                IF(u.url_foto IS NULL OR u.url_foto = '', NULL, CONCAT('$urlApp', u.url_foto)) AS url_foto,
+                CONCAT(e.nombre, ' ', e.apellidos) AS nombre_completo_estudiante,
+                e.numero_control AS numero_control_estudiante,
+                c.nombre AS nombre_carrera,
+                c.color AS color_carrera,
+                e.id AS id_estudiante,
+                c.id AS id_carrera,
+                CASE
+                    WHEN ee.empresa_id IS NOT NULL THEN 1
+                    ELSE 0
+                END AS tiene_relacion_empresa,
+                emp.nombre AS nombre_empresa,
+                p.nombre AS nombre_periodo,
+                emp.id AS id_empresa,
+                CONCAT(LEFT(e.nombre, 1), LEFT(e.apellidos, 1)) AS iniciales_nombre_apellido,
+                p.id AS id_periodo,
+                p.activo AS perido_activo
+            FROM estudiantes e
+            LEFT JOIN users u ON e.user_id = u.id
+            LEFT JOIN carreras c ON e.carrera_id = c.id
+            LEFT JOIN empresa_estudiante ee ON e.id = ee.estudiante_id
+            LEFT JOIN empresas emp ON ee.empresa_id = emp.id
+            LEFT JOIN periodos p ON ee.periodo_id = p.id
+            WHERE
+                CONCAT(e.nombre, ' ', e.apellidos) LIKE :term1
+                OR e.numero_control LIKE :term2
+                OR e.telefono LIKE :term3
+            AND e.deleted_at IS NULL
+        ";
+
+        $resultados = DB::select($sql, ['term1' => "%$term%", 'term2' => "%$term%", 'term3' => "%$term%"]);
+
+        return response()->json($resultados);
     }
 
     private function storeFile(UploadedFile $file, $folder)

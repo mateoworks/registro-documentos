@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\CurrentUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\UserEditController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Estudiante\HomeController;
 use App\Http\Controllers\Recursos\CarreraController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Recursos\PeriodoController;
 use App\Http\Controllers\Residencia\EmpresaController;
 use App\Http\Controllers\Residencia\EntregaController;
 use App\Http\Controllers\Residencia\EstudianteController;
+use App\Http\Controllers\Residencia\ExportPDFController;
 use App\Http\Controllers\Residencia\ResidenciaController;
 use App\Http\Controllers\Residencia\UtilController;
 use App\Http\Controllers\TablaController;
@@ -39,6 +41,10 @@ Route::post('login', LoginController::class)->name('login');
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('current-user', CurrentUserController::class)->name('current-user');
+    Route::put('editar-portada', [UserEditController::class, 'editarPortada'])->name('editar-portada');
+    Route::put('editar-avatar', [UserEditController::class, 'editarAvatar'])->name('editar-avatar');
+    Route::put('editar-name', [UserEditController::class, 'editarName'])->name('editar-name');
+    Route::put('editar-password', [UserEditController::class, 'editarPassword'])->name('editar-password');
 
     Route::apiResource('users', UserController::class)->names('users');
     Route::get('users-trashed', [UserController::class, 'indexTrashed'])->name('users.trashed');
@@ -72,20 +78,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('empresas-force-delete', [EmpresaController::class, 'forceDelete'])->name('empresas.forceDelete');
 
     Route::apiResource('entregas', EntregaController::class)->names('entregas');
-    Route::get('entregas-trashed', [EntregaController::class, 'indexTrashed'])->name('entregas.trashed');
-    Route::patch('entregas-restore', [EntregaController::class, 'restore'])->name('entregas.restore');
-    Route::delete('entregas-force-delete', [EntregaController::class, 'forceDelete'])->name('entregas.forceDelete');
 
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
     Route::get('estudiantes-trashed', [EstudianteController::class, 'indexTrashed'])->name('estudiantes.trashed');
     Route::patch('estudiantes-restore', [EstudianteController::class, 'restore'])->name('estudiantes.restore');
     Route::delete('estudiantes-force-delete', [EstudianteController::class, 'forceDelete'])->name('estudiantes.forceDelete');
+    Route::get('buscar-estudiante', [EstudianteController::class, 'buscarEstudiante'])
+        ->name('estudiantes.buscar');
 
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
 
     Route::get('periodo-activo', [ResidenciaController::class, 'periodoActivo'])->name('residencia.periodo');
     Route::patch('asignar-residencia/{estudiante}', [ResidenciaController::class, 'asignarResidencia'])
         ->name('residencia.asignar');
+
+    Route::get('residentes', [ResidenciaController::class, 'residentes'])
+        ->name('residencia.residentes');
+    Route::get('residentes-ver/{residente}', [ResidenciaController::class, 'ver'])
+        ->name('residencia.ver');
+    Route::delete('residentes-cancelar/{estudiante}', [ResidenciaController::class, 'cancelarResidencia'])
+        ->name('residencia.cancelar');
+    Route::post('residentes-actualizar', [ResidenciaController::class, 'actualizarResidencia'])
+        ->name('residencia.actualizar');
+    Route::get('estudiantes-sin-residencia', [ResidenciaController::class, 'estudiantesSinResidencia'])
+        ->name('estudiantes.sin.residencia');
+
+    Route::get('entrega-por-residente', [ResidenciaController::class, 'entregasPorResidente'])
+        ->name('residencia.entregasPorResidente');
+
     Route::get('empresas-select', [ResidenciaController::class, 'empresas'])
         ->name('residencia.autocompleteempresa');
 
@@ -100,4 +120,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Otros
     Route::get('estudiante-autompletar', [UtilController::class, 'autocompletarEstudiante'])
         ->name('estudiantes.autocompletar');
+
+    Route::get('documentos-pendientes', [UtilController::class, 'documentosPendientes'])
+        ->name('estudiantes.documentosPendientes');
+
+    //Estudiante datos
+    Route::get('estudiante-carrera', [HomeController::class, 'carreraUser'])
+        ->name('estudiante.carrera');
+    Route::get('estudiante-datos', [HomeController::class, 'estudiante'])
+        ->name('estudiante.datos');
+    Route::get('estudiante-documentos-entregar', [HomeController::class, 'documentosEntregar'])
+        ->name('estudiante.documentos.entregar');
+    Route::get('estudiante-documentos-entregados', [HomeController::class, 'entregasPorEstudiante'])
+        ->name('estudiante.documentos.entregados');
+    Route::get('estudiante-residencia', [HomeController::class, 'datosResidencia'])
+        ->name('estudiante.residencia');
 });
+Route::get('residentes-export-pdf', [ExportPDFController::class, 'exportResidentes'])
+    ->name('residentes.export.pdf');

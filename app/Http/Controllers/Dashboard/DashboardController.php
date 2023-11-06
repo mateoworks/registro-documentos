@@ -35,8 +35,8 @@ class DashboardController extends Controller
                 c.id AS carrera_id,
                 c.nombre AS carrera,
                 CASE
-                    WHEN c.escudo LIKE "http%" THEN c.escudo  # Si es un enlace externo, usa el enlace tal cual
-                    ELSE CONCAT(:baseURL, c.escudo)          # Si es almacenamiento local, concatena con la URL
+                    WHEN c.escudo LIKE "http%" THEN c.escudo
+                    ELSE CONCAT(:baseURL, c.escudo)
                 END AS escudo,
                 c.color AS color,
                 COUNT(e.id) AS numero_estudiantes

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Entrega extends Model
 {
-    use HasFactory, HasUuids, ApiTrait, SoftDeletes;
+    use HasFactory, HasUuids, ApiTrait;
 
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -33,7 +33,7 @@ class Entrega extends Model
     {
         parent::boot();
 
-        static::forceDeleted(function ($entrega) {
+        static::deleted(function ($entrega) {
             if ($entrega->url_documento) {
                 if (Storage::disk('public')->exists($entrega->url_documento))
                     Storage::disk('public')->delete($entrega->url_documento);

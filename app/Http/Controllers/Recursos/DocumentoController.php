@@ -10,6 +10,7 @@ use App\Http\Resources\DocumentoResource;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DocumentoController extends Controller
 {
@@ -31,7 +32,9 @@ class DocumentoController extends Controller
         $this->authorize('crear documentos');
         $data = $request->all();
         if ($request->hasFile('url_formato')) {
-            $data['url_formato'] = $this->storeFile($request->file('url_formato'), 'formatos');
+            $userProvidedName = $data['nombre_documento'];
+            $uniqueName = $this->uniqueNameWithUserProvidedName($request->file('url_formato'), $userProvidedName, 'formatos');
+            $data['url_formato'] = $request->file('url_formato')->storeAs('formatos', $uniqueName, 'public');
         }
         $documento = Documento::create($data);
         return DocumentoResource::make($documento);
@@ -58,7 +61,10 @@ class DocumentoController extends Controller
             if ($documento->url_formato) {
                 Storage::disk('public')->delete($documento->url_formato);
             }
-            $data['url_formato'] = $this->storeFile($request->file('url_formato'), 'formatos');
+
+            $userProvidedName = $data['nombre_documento'];
+            $uniqueName = $this->uniqueNameWithUserProvidedName($request->file('url_formato'), $userProvidedName, 'formatos');
+            $data['url_formato'] = $request->file('url_formato')->storeAs('formatos', $uniqueName, 'public');
         }
         $documento->update($data);
         return DocumentoResource::make($documento);
@@ -116,5 +122,17 @@ class DocumentoController extends Controller
     {
         $filePath = $file->store($folder, 'public');
         return $filePath;
+    }
+
+    private function uniqueNameWithUserProvidedName($file, $userProvidedName, $folder)
+    {
+        $extension = $file->getClientOriginalExtension();
+        $slug = Str::slug($userProvidedName);
+        $i = 1;
+        while (Storage::disk('public')->exists("$folder/$slug.$extension")) {
+            $slug = Str::slug($userProvidedName) . '-' . $i;
+            $i++;
+        }
+        return "$slug.$extension";
     }
 }

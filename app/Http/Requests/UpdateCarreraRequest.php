@@ -30,4 +30,23 @@ class UpdateCarreraRequest extends FormRequest
             'abrev' => 'nullable',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'departamento_id.required' => 'El campo Departamento es obligatorio.',
+            'departamento_id.exists' => 'El Departamento seleccionado no es válido.',
+            'nombre.required' => 'El nombre de la carrera es requerido.',
+            'nombre.string' => 'El nombre de la carrera debe ser una cadena de texto.',
+            'nombre.max' => 'El nombre de la carrera no puede tener más de :max caracteres.',
+            'escudo.image' => 'El escudo de la carrera debe ser una imagen válida.',
+            'escudo.mimes' => 'El escudo de la carrera debe ser una imagen en formato JPEG, PNG, JPG o GIF.',
+            'escudo.max' => 'El escudo de la carrera no puede ser mayor de :max kilobytes.',
+            'clave.required' => 'La clave de la carrera es requerida.',
+            'clave.string' => 'La clave de la carrera debe ser una cadena de texto.',
+            'clave.max' => 'La clave de la carrera no puede tener más de :max caracteres.',
+            'color' => 'El campo Color no es válido.',
+            'abrev' => 'El campo Abreviatura no es válido.',
+        ];
+    }
 }

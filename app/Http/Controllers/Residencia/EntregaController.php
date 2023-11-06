@@ -7,10 +7,13 @@ use App\Models\Entrega;
 use App\Http\Requests\StoreEntregaRequest;
 use App\Http\Requests\UpdateEntregaRequest;
 use App\Http\Resources\EntregaResource;
+use App\Models\Documento;
 use App\Models\Periodo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class EntregaController extends Controller
 {
@@ -42,8 +45,27 @@ class EntregaController extends Controller
     {
         $this->authorize('crear entregas');
         $data = $request->all();
+
+        $existingEntrega = Entrega::where('estudiante_id', $data['estudiante_id'])
+            ->where('documento_id', $data['documento_id'])
+            ->first();
+
+        if ($existingEntrega) {
+            return response()->json([
+                'errors' => [
+                    'custom_error' => ['Ya se agregó este documento al mismo residente.'],
+                ],
+                'message' => 'Ya se agregó este documento al mismo residente.',
+            ], 422);
+        }
+
         if ($request->hasFile('url_documento')) {
-            $data['url_documento'] = $this->storeFile($request->file('url_documento'), 'documentos');
+            $data['url_documento'] = $this->storeFile(
+                $request->file('url_documento'),
+                'documentos',
+                $data['estudiante_id'],
+                $data['documento_id'],
+            );
         }
         $entrega = Entrega::create($data);
         return EntregaResource::make($entrega);
@@ -71,17 +93,18 @@ class EntregaController extends Controller
             if ($entrega->url_documento) {
                 Storage::disk('public')->delete($entrega->url_documento);
             }
-            $data['url_documento'] = $this->storeFile($request->file('url_documento'), 'documentos');
+            $data['url_documento'] = $this->storeFile(
+                $request->file('url_documento'),
+                'documentos',
+                $data['estudiante_id'],
+                $data['documento_id'],
+            );
         }
         $entrega->update($data);
         return EntregaResource::make($entrega);
     }
 
-    private function storeFile(UploadedFile $file, $folder)
-    {
-        $filePath = $file->store($folder, 'public');
-        return $filePath;
-    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -92,42 +115,41 @@ class EntregaController extends Controller
         $entrega->delete();
     }
 
-    public function indexTrashed()
+
+    private function periodoYNumControl($id)
     {
-        $users = Entrega::withTrashed()
-            ->onlyTrashed()
-            ->included()
-            ->get();
-        return EntregaResource::collection($users);
+        $result = DB::select('
+            SELECT e.numero_control, p.nombre AS nombre_periodo
+            FROM estudiantes AS e
+            JOIN empresa_estudiante AS ee ON e.id = ee.estudiante_id
+            JOIN periodos AS p ON ee.periodo_id = p.id
+            WHERE e.id = :estudianteId
+            ORDER BY p.created_at ASC
+            LIMIT 1
+        ', ['estudianteId' => $id]);
+        $data = [];
+        if (!empty($result)) {
+            $data['numero_control'] = $result[0]->numero_control;
+            $data['nombre_periodo'] = $result[0]->nombre_periodo;
+        }
+        return $data;
     }
-
-    public function restore(Request $request)
+    private function storeFile(UploadedFile $file, $folder, $idEstudiante, $idDocumento)
     {
-        $this->authorize('restaurar usuarios');
-        $ids = $request->input('ids');
-
-        if (!is_array($ids)) {
-            $ids = [$ids];
+        $extension = $file->getClientOriginalExtension();
+        $nombreDoc = Documento::findOrFail($idDocumento);
+        $periodoYcontrol = $this->periodoYNumControl($idEstudiante);
+        $periodoSlug = Str::slug($periodoYcontrol['nombre_periodo']);
+        $nombreDocumentoSlug = Str::slug($nombreDoc->nombre_documento);
+        $numeroControl = $periodoYcontrol['numero_control'];
+        $nombreArchivo = $numeroControl . '_' . $nombreDocumentoSlug;
+        $i = 1;
+        while (Storage::disk('public')->exists("$folder/$periodoSlug/$nombreArchivo.$extension")) {
+            $nombreArchivo = Str::slug($nombreArchivo) . '-' . $i;
+            $i++;
         }
-        Entrega::whereIn('id', $ids)->restore();
-        return response()->json(['message' => 'Restauración exitosa']);
-    }
 
-    public function forceDelete(Request $request)
-    {
-        $this->authorize('forzar eliminacion usuarios');
-
-        $ids = $request->input('ids');
-
-        if (!is_array($ids)) {
-            $ids = [$ids];
-        }
-        foreach ($ids as $id) {
-            $entrega = Entrega::withTrashed()->find($id);
-            if ($entrega) {
-                $entrega->forceDelete();
-            }
-        }
-        return response()->json(['message' => 'Eliminación exitosa']);
+        $filePath = $file->storeAs("$folder/$periodoSlug", "$nombreArchivo.$extension", 'public');
+        return $filePath;
     }
 }

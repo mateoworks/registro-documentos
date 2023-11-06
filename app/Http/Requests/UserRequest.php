@@ -43,4 +43,18 @@ class UserRequest extends FormRequest
             'rol' => ['required']
         ];
     }
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre del usuario es requerido.',
+            'email.required' => 'El correo electrónico es requerido.',
+            'email.email' => 'El correo electrónico debe ser una dirección de correo válida.',
+            'email.unique' => 'El correo electrónico ingresado ya está en uso.',
+            'password.required' => 'La contraseña es requerida.',
+            'url_foto.image' => 'La foto debe ser una imagen válida.',
+            'url_foto.mimes' => 'La foto debe ser en formato JPEG, PNG, JPG o GIF.',
+            'url_foto.max' => 'La foto no puede ser mayor de :max kilobytes.',
+            'rol.required' => 'El rol del usuario es requerido.',
+        ];
+    }
 }

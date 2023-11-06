@@ -27,4 +27,19 @@ class StoreDepartamentoRequest extends FormRequest
             'apellidos_titular' => 'required|string|max:255',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'nombre.required' => 'El nombre del departamento es requerido.',
+            'nombre.string' => 'El nombre del departamento debe ser una cadena de texto.',
+            'nombre.max' => 'El nombre del departamento no puede tener más de :max caracteres.',
+            'nombre_titular.required' => 'El nombre del titular es requerido.',
+            'nombre_titular.string' => 'El nombre del titular debe ser una cadena de texto.',
+            'nombre_titular.max' => 'El nombre del titular no puede tener más de :max caracteres.',
+            'apellidos_titular.required' => 'Los apellidos del titular son requeridos.',
+            'apellidos_titular.string' => 'Los apellidos del titular deben ser una cadena de texto.',
+            'apellidos_titular.max' => 'Los apellidos del titular no pueden tener más de :max caracteres.',
+        ];
+    }
 }
