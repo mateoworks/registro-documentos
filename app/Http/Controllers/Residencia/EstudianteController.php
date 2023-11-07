@@ -22,9 +22,6 @@ class EstudianteController extends Controller
     public function index()
     {
         $this->authorize('ver estudiantes');
-        /* $periodo = Periodo::where('activo', true)->first();
-        $estudiantes = $periodo->estudiantes;
-        $estudiantes->load('carrera'); */
         $estudiantes = Estudiante::included()
             ->filter()
             ->orderBy('created_at', 'DESC')
