@@ -84,7 +84,7 @@ class ResidenciaController extends Controller
         return response()->json($datosEstudiante, 200);
     }
 
-    public function residentes()
+    public function residentes(Request $request)
     {
         $urlApp = config('app.url') . '/storage/';
         $sql = "

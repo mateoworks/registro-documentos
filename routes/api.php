@@ -11,6 +11,7 @@ use App\Http\Controllers\Recursos\CarreraController;
 use App\Http\Controllers\Recursos\DepartamentoController;
 use App\Http\Controllers\Recursos\DocumentoController;
 use App\Http\Controllers\Recursos\PeriodoController;
+use App\Http\Controllers\Residencia\ConsultasController;
 use App\Http\Controllers\Residencia\EmpresaController;
 use App\Http\Controllers\Residencia\EntregaController;
 use App\Http\Controllers\Residencia\EstudianteController;
@@ -135,6 +136,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->name('estudiante.documentos.entregados');
     Route::get('estudiante-residencia', [HomeController::class, 'datosResidencia'])
         ->name('estudiante.residencia');
+    Route::get('residentes-por-carrera/{carreraId}', [ConsultasController::class, 'residentesPorCarrera'])
+        ->name('residentes.por.carrera');
 });
 Route::get('residentes-export-pdf', [ExportPDFController::class, 'exportResidentes'])
     ->name('residentes.export.pdf');
+Route::get('residentes-export-pdf-carrera/{carrera}', [ExportPDFController::class, 'exportResidentesPorCarrera'])
+    ->name('residentes.export.pdf.carrera');
