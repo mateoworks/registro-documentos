@@ -86,6 +86,7 @@ class User extends Authenticatable
             return Storage::disk('public')->url('profile1.jpg');
     }
 
+
     public function getPortada()
     {
         if ($this->url_portada) {

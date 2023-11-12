@@ -63,7 +63,7 @@ class ExportPDFController extends Controller
             'residentes' => $residentes,
             'carrera' => $car,
         ];
-
+        set_time_limit(0);
         $pdf = Pdf::loadView('pdf.residentes-carrera', $data, ['size' => 'letter']);
         $nombrePeriodoSlug = Str::slug($periodo->nombre);
         $filename = now()->format('Y-m-d') . '_Residentes' . '_' . $car->abrev . '-' . $nombrePeriodoSlug . '.pdf';
@@ -100,6 +100,7 @@ class ExportPDFController extends Controller
         if (!Storage::exists('public/perfil/thumbnails')) {
             Storage::makeDirectory('public/perfil/thumbnails');
         }
+
         foreach ($residentes as $residente) {
             if (!empty($residente->url_foto)) {
                 $image = \Image::make($residente->url_foto);
@@ -117,7 +118,7 @@ class ExportPDFController extends Controller
             'periodo' => $periodo,
             'residentes' => $residentes,
         ];
-
+        set_time_limit(0);
         $pdf = Pdf::loadView('pdf.residentes', $data, ['size' => 'letter']);
         $nombrePeriodoSlug = Str::slug($periodo->nombre);
         $filename = now()->format('Y-m-d') . '_Residentes' . '_' . $nombrePeriodoSlug . '.pdf';

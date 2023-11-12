@@ -1,0 +1,1 @@
+import{u as t}from"./utils.esm.429db25b.js";import{i,g as u}from"./index.16fafb50.js";function a(n=""){const o=t(n),e=i(o,null);if(!e){var r;throw((r=u())==null?void 0:r.proxy)?new Error("No 'queryClient' found in Vue context, use 'VueQueryPlugin' to properly initialize the library."):new Error("vue-query hooks can only be used inside setup() function.")}return e}export{a as u};

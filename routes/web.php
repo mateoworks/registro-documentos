@@ -19,3 +19,6 @@ Route::get('/', function () {
 });
 
 Route::get('/tabla', TablaController::class)->name('tabla');
+Route::get('{any}', function () {
+    return view('app');
+})->where('any','.*');

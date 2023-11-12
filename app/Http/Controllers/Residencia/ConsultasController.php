@@ -48,4 +48,32 @@ class ConsultasController extends Controller
         }
         return response()->json($residentes);
     }
+
+    public function documentosPendientesPorEntregar($estudiante)
+    {
+        $estudianteId = $estudiante; // Reemplaza esto con el ID del estudiante específico
+
+        $result = DB::select("
+            SELECT
+                d.id AS documento_id,
+                d.nombre_documento,
+                d.abrev_nombre,
+                d.fecha_limite,
+                d.url_formato,
+                d.created_at,
+                e.id AS entrega_id,
+                e.url_documento AS documento_entregado,
+                CASE
+                    WHEN d.fecha_limite IS NULL THEN 0
+                    WHEN d.fecha_limite < DATE(NOW()) THEN 1
+                    ELSE 0
+                END AS fecha_limite_vencida
+            FROM documentos AS d
+            LEFT JOIN entregas AS e ON d.id = e.documento_id AND e.estudiante_id = ?
+            WHERE e.id IS NULL
+            ORDER BY d.fecha_limite ASC
+        ", [$estudianteId]);
+
+        return response()->json($result);
+    }
 }

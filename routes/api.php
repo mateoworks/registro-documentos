@@ -14,6 +14,7 @@ use App\Http\Controllers\Recursos\PeriodoController;
 use App\Http\Controllers\Residencia\ConsultasController;
 use App\Http\Controllers\Residencia\EmpresaController;
 use App\Http\Controllers\Residencia\EntregaController;
+use App\Http\Controllers\Residencia\EstadisticasController;
 use App\Http\Controllers\Residencia\EstudianteController;
 use App\Http\Controllers\Residencia\ExportPDFController;
 use App\Http\Controllers\Residencia\ResidenciaController;
@@ -138,6 +139,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->name('estudiante.residencia');
     Route::get('residentes-por-carrera/{carreraId}', [ConsultasController::class, 'residentesPorCarrera'])
         ->name('residentes.por.carrera');
+    Route::get('residentes-doc-pendientes/{estudianteId}', [ConsultasController::class, 'documentosPendientesPorEntregar'])
+        ->name('residentes.doc.pendientes');
+
+    //Estadística
+    Route::get('residentes-por-periodo', [EstadisticasController::class, 'getEstudiantesPorPeriodo'])
+        ->name('residentes.por.periodo');
 });
 Route::get('residentes-export-pdf', [ExportPDFController::class, 'exportResidentes'])
     ->name('residentes.export.pdf');

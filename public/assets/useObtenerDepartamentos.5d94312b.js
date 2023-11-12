@@ -1,0 +1,1 @@
+import{d as t}from"./documentosApi.d4af84c5.js";import{u as a}from"./useQuery.esm.48506497.js";const r=async()=>{const{data:e}=await t.get("/departamentos");return e},n=()=>a(["departamentos"],r,{staleTime:36e5});export{n as u};
