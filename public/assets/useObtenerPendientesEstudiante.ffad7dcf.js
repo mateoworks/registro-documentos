@@ -1,1 +1,0 @@
-import{d as r}from"./documentosApi.d4af84c5.js";import{u as o}from"./useQuery.esm.48506497.js";const a=async e=>{const{data:t}=await r.get("documentos-pendientes",{params:{id:e}});return t},i=e=>{const{isLoading:t,isError:n,data:s}=o({queryKey:["documentos-pendientes"],queryFn:()=>a(e)});return{isLoading:t,isError:n,data:s}};export{i as u};

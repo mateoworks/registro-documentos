@@ -1,1 +1,0 @@
-import{a9 as t}from"./index.16fafb50.js";const s=t.getItem("user"),r=JSON.parse(s+""),u=()=>{const e=r.role;return e.includes("admin")?"admin":e.includes("capturista")?"capturista":e.includes("estudiante")?"estudiante":"unknow"};export{u as g};
