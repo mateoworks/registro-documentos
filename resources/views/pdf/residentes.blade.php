@@ -108,7 +108,7 @@
                         <tr>
                             <td class="cell-avatar">
                                 @if ($residente->url_foto)
-                                <img src="{{ asset($residente->url_foto) }}" alt="Avatar" class="avatar-image">
+                                <img src="{{ $residente->url_foto }}" alt="Avatar" class="avatar-image">
                                 @else
                                 <div class="avatar-text">{{ $residente->iniciales_nombre_apellido }}</div>
                                 @endif
@@ -119,7 +119,7 @@
                                     <span class="chip-carrera" style="background-color: {{ $residente->color_carrera }};">
                                         {{$residente->nombre_carrera}}
                                     </span>
-                                    <img src="{{ asset('iconos/llamada.png') }}" height="12px" alt="Icono de teléfono">
+                                    <!-- <img src="{{ asset('iconos/llamada.png') }}" height="12px" alt="Icono de teléfono"> -->
                                     {{ $residente->telefono_estudiante }}
                                 </div>
                             </td>

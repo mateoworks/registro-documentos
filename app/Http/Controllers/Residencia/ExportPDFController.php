@@ -97,9 +97,9 @@ class ExportPDFController extends Controller
         ";
         $residentes = DB::select($sql);
 
-        if (!Storage::exists('public/perfil/thumbnails')) {
+        /* if (!Storage::exists('public/perfil/thumbnails')) {
             Storage::makeDirectory('public/perfil/thumbnails');
-        }
+        } */
 
         /* foreach ($residentes as $residente) {
             if (!empty($residente->url_foto)) {
