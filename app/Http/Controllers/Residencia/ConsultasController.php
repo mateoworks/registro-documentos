@@ -34,7 +34,7 @@ class ConsultasController extends Controller
             AND e.deleted_at IS NULL;
         ";
         $residentes = DB::select($sql, ['carreraId' => $carreraId]);
-        foreach ($residentes as $residente) {
+        /*         foreach ($residentes as $residente) {
             if (!empty($residente->url_foto)) {
                 $image = \Image::make($residente->url_foto);
 
@@ -45,7 +45,7 @@ class ConsultasController extends Controller
 
                 $residente->url_foto = $urlApp . "perfil/thumbnails/" . $residente->estudiante_id . ".jpg";
             }
-        }
+        } */
         return response()->json($residentes);
     }
 

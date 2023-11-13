@@ -110,18 +110,7 @@ class ResidenciaController extends Controller
             AND e.deleted_at IS NULL;
         ";
         $residentes = DB::select($sql);
-        foreach ($residentes as $residente) {
-            if (!empty($residente->url_foto)) {
-                $image = \Image::make($residente->url_foto);
 
-                $image->resize(80, 80);
-
-                $thumbnailPath = storage_path("app/public/perfil/thumbnails/{$residente->estudiante_id}.jpg");
-                $image->save($thumbnailPath);
-
-                $residente->url_foto = $urlApp . "perfil/thumbnails/" . $residente->estudiante_id . ".jpg";
-            }
-        }
         return response()->json($residentes);
     }
 
