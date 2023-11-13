@@ -101,7 +101,7 @@ class ExportPDFController extends Controller
             Storage::makeDirectory('public/perfil/thumbnails');
         }
 
-        foreach ($residentes as $residente) {
+        /* foreach ($residentes as $residente) {
             if (!empty($residente->url_foto)) {
                 $image = \Image::make($residente->url_foto);
 
@@ -112,7 +112,7 @@ class ExportPDFController extends Controller
 
                 $residente->url_foto = $urlApp . "perfil/thumbnails/" . $residente->estudiante_id . ".jpg";
             }
-        }
+        } */
         $periodo = Periodo::where('activo', true)->first();
         $data = [
             'periodo' => $periodo,
