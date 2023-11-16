@@ -3,13 +3,23 @@
 namespace App\Http\Controllers\Residencia;
 
 use App\Http\Controllers\Controller;
+use App\Models\Documento;
+use App\Models\Periodo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ConsultasController extends Controller
 {
-    public function residentesPorCarrera($carreraId)
+    public function residentesPorCarrera(Request $request, $carreraId)
     {
+        $periodoId = $request->query('periodoId');
+
+        if (!$periodoId) {
+            $periodo = Periodo::where('activo', 1)->first();
+            $periodoId = $periodo->id;
+        }
+        //Total de documentos
+        $totalDocumentos = Documento::count();
         $urlApp = config('app.url') . '/storage/';
         $sql = "
             SELECT
@@ -23,17 +33,28 @@ class ConsultasController extends Controller
                 emp.telefono AS telefono_empresa,
                 e.telefono AS telefono_estudiante,
                 e.numero_control AS numero_control_estudiante,
-                ee.proyecto AS proyecto
+                ee.proyecto AS proyecto,
+                :totalDocumentos AS total_documentos,
+                (
+                    SELECT COUNT(*)
+                    FROM entregas AS ent
+                    WHERE ent.estudiante_id = e.id
+                ) AS documentos_entregados
             FROM empresa_estudiante AS ee
             INNER JOIN estudiantes AS e ON ee.estudiante_id = e.id
             INNER JOIN users AS u ON e.user_id = u.id
             INNER JOIN carreras AS c ON e.carrera_id = c.id
             INNER JOIN empresas AS emp ON ee.empresa_id = emp.id
             INNER JOIN periodos AS p ON ee.periodo_id = p.id
-            WHERE p.activo = 1 AND c.id = :carreraId
-            AND e.deleted_at IS NULL;
+            WHERE p.id = :periodoId AND c.id = :carreraId
+            AND e.deleted_at IS NULL
+            ;
         ";
-        $residentes = DB::select($sql, ['carreraId' => $carreraId]);
+        $residentes = DB::select($sql, [
+            'carreraId' => $carreraId,
+            'periodoId' => $periodoId,
+            'totalDocumentos' => $totalDocumentos
+        ]);
         /*         foreach ($residentes as $residente) {
             if (!empty($residente->url_foto)) {
                 $image = \Image::make($residente->url_foto);
