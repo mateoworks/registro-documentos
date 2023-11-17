@@ -79,8 +79,8 @@ class EmpresaController extends Controller
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        Empresa::whereIn('id', $ids)->restore();
-        return response()->json(['message' => 'Restaurado con éxito!']);
+        Empresa::whereIn('id', $ids)->forceDelete();
+        return response()->json(['message' => 'Eliminado con éxito!']);
     }
 
     public function indexTrashed()
