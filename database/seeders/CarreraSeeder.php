@@ -32,7 +32,7 @@ class CarreraSeeder extends Seeder
         Carrera::factory()->create([
             'nombre' => 'Ingeniería en Gestión Empresarial',
             'departamento_id' => 3,
-            'color' => '#FFC/00',
+            'color' => '#FFC700',
             'abrev' => 'IGE',
             'escudo' => 'escudo/ige.png',
         ]);

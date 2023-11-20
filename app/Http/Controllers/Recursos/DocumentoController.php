@@ -20,7 +20,7 @@ class DocumentoController extends Controller
     public function index()
     {
         $this->authorize('ver documentos');
-        $documentos = Documento::included()->filter()->sort()->getOrPaginate();
+        $documentos = Documento::included()->filter()->sort()->latest()->getOrPaginate();
         return DocumentoResource::collection($documentos);
     }
 

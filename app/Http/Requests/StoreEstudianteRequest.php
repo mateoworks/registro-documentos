@@ -25,6 +25,7 @@ class StoreEstudianteRequest extends FormRequest
             'carrera_id' => 'required|exists:carreras,id',
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
+            'genero' => 'nullable',
             'numero_control' => 'required|string|unique:estudiantes,numero_control|max:255',
             'domicilio' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',

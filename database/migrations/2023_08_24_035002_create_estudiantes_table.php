@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('carrera_id');
             $table->string('nombre');
             $table->string('apellidos');
+            $table->string('genero')->nullable();
             $table->string('numero_control')->unique();
             $table->string('domicilio')->nullable();
             $table->string('email');

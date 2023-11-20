@@ -45,24 +45,32 @@ class TablaController extends Controller
     public function obtenerDatos()
     {
         $periodoActivo = Periodo::where('activo', true)->first();
-        $estudiantes = $periodoActivo->estudiantes;
-        $estudiantes->load('carrera');
-        $documentos = Documento::all();
-        $entregas = Entrega::all(); // Ajusta la obtención según tus necesidades
+        if ($periodoActivo) {
+            $estudiantes = $periodoActivo->estudiantes;
+            $estudiantes->load('carrera');
+            $documentos = Documento::all();
+            $entregas = Entrega::all(); // Ajusta la obtención según tus necesidades
 
-        // Organiza los datos para acceder al estado de entrega de cada documento por estudiante
-        $data = [];
-        foreach ($estudiantes as $estudiante) {
-            $data[$estudiante->id] = [];
-            foreach ($documentos as $documento) {
-                $data[$estudiante->id][$documento->id] = $this->getEstadoEntrega($entregas, $estudiante->id, $documento->id);
+            // Organiza los datos para acceder al estado de entrega de cada documento por estudiante
+            $data = [];
+            foreach ($estudiantes as $estudiante) {
+                $data[$estudiante->id] = [];
+                foreach ($documentos as $documento) {
+                    $data[$estudiante->id][$documento->id] = $this->getEstadoEntrega($entregas, $estudiante->id, $documento->id);
+                }
             }
-        }
 
-        return response()->json([
-            'estudiantes' => $estudiantes,
-            'documentos' => $documentos,
-            'data' => $data,
-        ]);
+            return response()->json([
+                'estudiantes' => $estudiantes,
+                'documentos' => $documentos,
+                'data' => $data,
+            ]);
+        } else {
+            return response()->json([
+                'estudiantes' => [],
+                'documentos' => [],
+                'data' => [],
+            ]);
+        }
     }
 }

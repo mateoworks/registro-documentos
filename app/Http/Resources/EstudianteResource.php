@@ -21,6 +21,7 @@ class EstudianteResource extends JsonResource
             'carrera_id' => $this->carrera_id,
             'nombre' => $this->nombre,
             'apellidos' => $this->apellidos,
+            'genero' => $this->genero,
             'numero_control' => $this->numero_control,
             'domicilio' => $this->domicilio,
             'email' => $this->email,

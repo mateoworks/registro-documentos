@@ -13,11 +13,17 @@ class DashboardController extends Controller
     public function residentes()
     {
         $periodoActivo = Periodo::where('activo', true)->first();
-        $residentes = $periodoActivo->estudiantes->count();
-        if ($residentes) {
-            return response()->json([
-                'no_residentes' => $residentes,
-            ]);
+        if ($periodoActivo) {
+            $residentes = $periodoActivo->estudiantes->count();
+            if ($residentes) {
+                return response()->json([
+                    'no_residentes' => $residentes,
+                ]);
+            } else {
+                return response()->json([
+                    'no_residentes' => 0,
+                ]);
+            }
         } else {
             return response()->json([
                 'no_residentes' => 0,
@@ -28,27 +34,31 @@ class DashboardController extends Controller
     {
         // Obtener el primer periodo activo
         $periodoActivo = Periodo::where('activo', true)->first();
-        $baseURL = config('app.url') . '/storage/';
-        // Consulta SQL para obtener el número de estudiantes por carrera y el campo "escudo"
-        $results = DB::select('
-            SELECT
-                c.id AS carrera_id,
-                c.nombre AS carrera,
-                CASE
-                    WHEN c.escudo LIKE "http%" THEN c.escudo
-                    ELSE CONCAT(:baseURL, c.escudo)
-                END AS escudo,
-                c.color AS color,
-                COUNT(e.id) AS numero_estudiantes
-            FROM carreras AS c
-            LEFT JOIN estudiantes AS e ON c.id = e.carrera_id
-            WHERE e.id IN (
-                SELECT estudiante_id FROM empresa_estudiante WHERE periodo_id = :periodo_id
-            )
-            GROUP BY c.id, c.nombre, c.escudo
-        ', ['periodo_id' => $periodoActivo->id, 'baseURL' => $baseURL]);
-        if ($results) {
-            return response()->json($results);
+        if ($periodoActivo) {
+            $baseURL = config('app.url') . '/storage/';
+            // Consulta SQL para obtener el número de estudiantes por carrera y el campo "escudo"
+            $results = DB::select('
+                SELECT
+                    c.id AS carrera_id,
+                    c.nombre AS carrera,
+                    CASE
+                        WHEN c.escudo LIKE "http%" THEN c.escudo
+                        ELSE CONCAT(:baseURL, c.escudo)
+                    END AS escudo,
+                    c.color AS color,
+                    COUNT(e.id) AS numero_estudiantes
+                FROM carreras AS c
+                LEFT JOIN estudiantes AS e ON c.id = e.carrera_id
+                WHERE e.id IN (
+                    SELECT estudiante_id FROM empresa_estudiante WHERE periodo_id = :periodo_id
+                )
+                GROUP BY c.id, c.nombre, c.escudo
+            ', ['periodo_id' => $periodoActivo->id, 'baseURL' => $baseURL]);
+            if ($results) {
+                return response()->json($results);
+            } else {
+                return response()->json([]);
+            }
         } else {
             return response()->json([]);
         }

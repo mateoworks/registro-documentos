@@ -19,7 +19,7 @@ class Estudiante extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'user_id', 'periodo_id', 'carrera_id', 'nombre', 'apellidos', 'numero_control',
+        'user_id', 'periodo_id', 'carrera_id', 'nombre', 'apellidos', 'genero', 'numero_control',
         'domicilio', 'email', 'seguridad_social', 'no_seguridad_social', 'ciudad', 'telefono',
     ];
 

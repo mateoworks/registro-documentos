@@ -28,6 +28,7 @@ class UpdateEstudianteRequest extends FormRequest
             'carrera_id' => 'required|exists:carreras,id',
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
+            'genero' => 'nullable',
             'numero_control' => [
                 "required",
                 "string",

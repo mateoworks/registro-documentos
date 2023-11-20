@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre_documento');
             $table->string('abrev_nombre')->nullable();
+            $table->boolean('entrega_estudiante')->nullable();
+            $table->text('descripcion')->nullable();
             $table->date('fecha_limite')->nullable();
             $table->string('url_formato')->nullable();
             $table->timestamps();

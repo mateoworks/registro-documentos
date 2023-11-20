@@ -17,6 +17,7 @@ use App\Http\Controllers\Residencia\EntregaController;
 use App\Http\Controllers\Residencia\EstadisticasController;
 use App\Http\Controllers\Residencia\EstudianteController;
 use App\Http\Controllers\Residencia\ExportPDFController;
+use App\Http\Controllers\Residencia\FormatoController;
 use App\Http\Controllers\Residencia\ResidenciaController;
 use App\Http\Controllers\Residencia\UtilController;
 use App\Http\Controllers\TablaController;
@@ -150,3 +151,7 @@ Route::get('residentes-export-pdf', [ExportPDFController::class, 'exportResident
     ->name('residentes.export.pdf');
 Route::get('residentes-export-pdf-carrera/{carrera}', [ExportPDFController::class, 'exportResidentesPorCarrera'])
     ->name('residentes.export.pdf.carrera');
+
+//Formatos
+Route::get('formato-carta-presentacion/{estudianteId}', [FormatoController::class, 'formatoCartaPresentacion'])
+    ->name('formato.carta.presentacion');

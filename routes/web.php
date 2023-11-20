@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Residencia\FormatoController;
 use App\Http\Controllers\TablaController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get('/tabla', TablaController::class)->name('tabla');
-Route::get('{any}', function () {
+/* Route::get('{any}', function () {
     return view('app');
-})->where('any','.*');
+})->where('any', '.*'); */
+
+Route::get('/formato', [FormatoController::class, 'formatoCartaPresentacion'])
+    ->name('formato');

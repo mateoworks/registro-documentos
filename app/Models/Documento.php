@@ -18,6 +18,8 @@ class Documento extends Model
     protected $fillable = [
         'nombre_documento',
         'abrev_nombre',
+        'entrega_estudiante',
+        'descripcion',
         'fecha_limite',
         'url_formato'
     ];

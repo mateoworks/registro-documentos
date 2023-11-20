@@ -19,6 +19,8 @@ class DocumentoResource extends JsonResource
             'id' => $this->id,
             'nombre_documento' => $this->nombre_documento,
             'abrev_nombre' => $this->abrev_nombre,
+            'entrega_estudiante' => $this->entrega_estudiante,
+            'descripcion' => $this->descripcion,
             'fecha_limite' => Carbon::parse($this->fecha_limite)->format('Y-m-d'),
             'url_formato' => $this->getFormato(),
             'created_at' => $this->created_at,

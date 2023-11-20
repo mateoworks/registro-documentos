@@ -68,7 +68,7 @@ class PeriodoController extends Controller
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        Periodo::whereIn('id', $ids)->restore();
+        Periodo::whereIn('id', $ids)->forceDelete();
         return response()->json(['message' => 'Eliminación completada']);
     }
 
