@@ -19,10 +19,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/tabla', TablaController::class)->name('tabla');
-/* Route::get('{any}', function () {
-    return view('app');
-})->where('any', '.*'); */
-
-Route::get('/formato', [FormatoController::class, 'formatoCartaPresentacion'])
-    ->name('formato');
+Route::get('formato-carta-presentacion/{estudianteId}', [FormatoController::class, 'formatoCartaPresentacion'])
+    ->name('formato.carta.presentacion');

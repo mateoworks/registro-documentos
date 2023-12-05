@@ -33,6 +33,11 @@ class Carrera extends Model
         });
     }
 
+    public function proyectos()
+    {
+        return $this->hasMany(Proyecto::class, 'carrera_id');
+    }
+
     public function departamento()
     {
         return $this->belongsTo(Departamento::class);

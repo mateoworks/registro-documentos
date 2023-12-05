@@ -25,11 +25,11 @@ class EntregaController extends Controller
         $this->authorize('ver entregas');
         $entregas = Entrega::whereIn('estudiante_id', function ($query) {
             $query->select('estudiante_id')
-                ->from('empresa_estudiante')
+                ->from('residencias')
                 ->whereIn('periodo_id', function ($subquery) {
                     $subquery->select('periodo_id')
-                        ->from('empresa_estudiante')
-                        ->join('periodos', 'periodos.id', '=', 'empresa_estudiante.periodo_id')
+                        ->from('residencias')
+                        ->join('periodos', 'periodos.id', '=', 'residencias.periodo_id')
                         ->where('periodos.activo', true);
                 });
         })

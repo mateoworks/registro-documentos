@@ -43,16 +43,32 @@ class Periodo extends Model
             ->withPivot(['actividad', 'proyecto_id'])
             ->withTimestamps();
     } */
-    public function estudiantes()
+    /* public function estudiantes()
     {
         return $this->belongsToMany(Estudiante::class, 'empresa_estudiante', 'periodo_id', 'estudiante_id')
             ->withPivot('actividad');
-    }
+    } */
 
     public function empresas(): BelongsToMany
     {
         return $this->belongsToMany(Empresa::class, 'empresa_estudiante')
             ->withPivot('actividad', 'periodo_id')
             ->withTimestamps();
+    }
+
+    public function residencias()
+    {
+        return $this->hasMany(Residencia::class, 'periodo_id', 'id');
+    }
+    public function estudiantes()
+    {
+        return $this->hasManyThrough(
+            Estudiante::class,
+            Residencia::class,
+            'periodo_id', // Clave foránea en la tabla Residencia
+            'id', // Clave primaria en la tabla Estudiante
+            'id', // Clave local en la tabla Periodo
+            'estudiante_id' // Clave foránea en la tabla Residencia que apunta a Estudiante
+        );
     }
 }

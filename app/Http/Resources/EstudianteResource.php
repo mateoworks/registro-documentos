@@ -33,8 +33,8 @@ class EstudianteResource extends JsonResource
             'updated_at' => $this->updated_at,
             'user' => UserResource::make($this->whenLoaded('user')),
             'carrera' => CarreraResource::make($this->whenLoaded('carrera')),
-            'empresas' => EmpresaResource::collection($this->whenLoaded('empresas')),
-            'periodos' => PeriodoResource::collection($this->whenLoaded('periodos')),
+            'empresa' => EmpresaResource::make($this->whenLoaded('empresa')),
+            'periodo' => PeriodoResource::make($this->whenLoaded('periodo')),
             'actividad' => $this->whenPivotLoaded('empresa_estudiante', function () {
                 return $this->pivot->actividad;
             }),

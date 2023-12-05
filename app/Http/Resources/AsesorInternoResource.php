@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProyectoResource extends JsonResource
+class AsesorInternoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +17,10 @@ class ProyectoResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
-            'tipo' => $this->tipo,
-            'carrera_id' => $this->carrera_id,
-            'carrera' => CarreraResource::make($this->whenLoaded('carrera')),
+            'apellidos' => $this->apellidos,
+            'email' => $this->email,
+            'telefono' => $this->telefono,
+            'titulo' => $this->titulo,
         ];
     }
 }

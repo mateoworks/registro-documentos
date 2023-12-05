@@ -7,10 +7,12 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\UserEditController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Estudiante\HomeController;
+use App\Http\Controllers\Recursos\AsesorInternoController;
 use App\Http\Controllers\Recursos\CarreraController;
 use App\Http\Controllers\Recursos\DepartamentoController;
 use App\Http\Controllers\Recursos\DocumentoController;
 use App\Http\Controllers\Recursos\PeriodoController;
+use App\Http\Controllers\Recursos\ProyectoController;
 use App\Http\Controllers\Residencia\ConsultasController;
 use App\Http\Controllers\Residencia\EmpresaController;
 use App\Http\Controllers\Residencia\EntregaController;
@@ -82,6 +84,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('entregas', EntregaController::class)->names('entregas');
 
+    Route::apiResource('proyectos', ProyectoController::class)->names('proyectos');
+    Route::get('proyectos-autocomplete', [ProyectoController::class, 'autocomplete'])->name('proyectos.autocomplete');
+
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
     Route::get('estudiantes-trashed', [EstudianteController::class, 'indexTrashed'])->name('estudiantes.trashed');
     Route::patch('estudiantes-restore', [EstudianteController::class, 'restore'])->name('estudiantes.restore');
@@ -90,6 +95,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->name('estudiantes.buscar');
 
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
+    Route::apiResource('asesores', AsesorInternoController::class)->names('asesores');
+    Route::get('asesores-autocomplete', [AsesorInternoController::class, 'autocomplete']);
 
     Route::get('periodo-activo', [ResidenciaController::class, 'periodoActivo'])->name('residencia.periodo');
     Route::patch('asignar-residencia/{estudiante}', [ResidenciaController::class, 'asignarResidencia'])

@@ -14,7 +14,7 @@ class DashboardController extends Controller
     {
         $periodoActivo = Periodo::where('activo', true)->first();
         if ($periodoActivo) {
-            $residentes = $periodoActivo->estudiantes->count();
+            $residentes = $periodoActivo->residencias->count();
             if ($residentes) {
                 return response()->json([
                     'no_residentes' => $residentes,
@@ -47,13 +47,15 @@ class DashboardController extends Controller
                     END AS escudo,
                     c.color AS color,
                     COUNT(e.id) AS numero_estudiantes
-                FROM carreras AS c
-                LEFT JOIN estudiantes AS e ON c.id = e.carrera_id
-                WHERE e.id IN (
-                    SELECT estudiante_id FROM empresa_estudiante WHERE periodo_id = :periodo_id
-                )
-                GROUP BY c.id, c.nombre, c.escudo
-            ', ['periodo_id' => $periodoActivo->id, 'baseURL' => $baseURL]);
+                FROM carreras c
+                LEFT JOIN estudiantes e ON c.id = e.carrera_id
+                LEFT JOIN residencias r ON e.id = r.estudiante_id
+                LEFT JOIN periodos p ON r.periodo_id = p.id
+                WHERE p.activo = true
+                GROUP BY carrera_id
+
+
+            ', ['baseURL' => $baseURL]);
             if ($results) {
                 return response()->json($results);
             } else {

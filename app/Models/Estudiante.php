@@ -23,7 +23,7 @@ class Estudiante extends Model
         'domicilio', 'email', 'seguridad_social', 'no_seguridad_social', 'ciudad', 'telefono',
     ];
 
-    protected $allowIncluded = ['user', 'carrera', 'empresas', 'periodos'];
+    protected $allowIncluded = ['user', 'carrera', 'empresa', 'periodo', 'asesorInterno', 'proyecto'];
     protected $allowFilter = [
         'nombre', 'apellidos', 'numero_control',
         'domicilio', 'email', 'telefono', 'carrera_id',
@@ -82,5 +82,27 @@ class Estudiante extends Model
     public function estregas()
     {
         return $this->belongsToMany(Entrega::class);
+    }
+
+    //Residencias relacion
+
+    public function empresa()
+    {
+        return $this->hasOneThrough(Empresa::class, Residencia::class, 'estudiante_id', 'id', 'id', 'empresa_id');
+    }
+
+    public function periodo()
+    {
+        return $this->hasOneThrough(Periodo::class, Residencia::class, 'estudiante_id', 'id', 'id', 'periodo_id');
+    }
+
+    public function asesorInterno()
+    {
+        return $this->hasOneThrough(AsesorInterno::class, Residencia::class, 'estudiante_id', 'id', 'id', 'asesor_interno_id');
+    }
+
+    public function proyecto()
+    {
+        return $this->hasOneThrough(Proyecto::class, Residencia::class, 'estudiante_id', 'id', 'id', 'proyecto_id');
     }
 }

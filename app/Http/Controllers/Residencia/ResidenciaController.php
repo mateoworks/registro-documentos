@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Residencia;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ResidenteRequest;
 use App\Http\Resources\PeriodoResource;
+use App\Models\Documento;
 use App\Models\Empresa;
 use App\Models\Estudiante;
 use App\Models\Periodo;
+use App\Models\Residencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,27 +26,15 @@ class ResidenciaController extends Controller
         }
     }
 
-    public function asignarResidencia(Request $request, Estudiante $estudiante)
+    public function asignarResidencia(ResidenteRequest $request, Estudiante $estudiante)
     {
+        $data = $request->all();
         if (!$request->periodo_id)
-            $periodo = Periodo::where('activo', true)->first();
+            $data['periodo'] = Periodo::where('activo', true)->first();
         else
             $periodo = Periodo::findOrFail($request->periodo_id);
 
-        $existingAssignment = $estudiante->empresas()
-            ->where('periodo_id', $periodo->id)
-            ->where('actividad', 'Residencia profesional')
-            ->count();
-
-        if ($existingAssignment > 0) {
-            return response()->json(['message' => 'El estudiante ya tiene una asignación de residencia en este período activo'], 422);
-        }
-
-        $estudiante->empresas()->attach($request->empresa_id, [
-            'proyecto' => $request->proyecto,
-            'periodo_id' => $periodo->id,
-            'actividad' => 'Residencia profesional',
-        ]);
+        $residente = Residencia::create($request->all());
 
         return response()->json(['message' => 'La asignación de residencia fue exitosa'], 200);
     }
@@ -53,7 +44,7 @@ class ResidenciaController extends Controller
         $estudianteId = $residente;
         $urlApp = config('app.url') . '/storage/';
         $resultado = DB::select("
-            SELECT
+                SELECT
                 estudiantes.*,
                 estudiantes.nombre AS nombre_estudiante,
                 estudiantes.telefono AS telefono_estudiante,
@@ -68,16 +59,20 @@ class ResidenciaController extends Controller
                 IF(users.url_foto IS NULL OR users.url_foto = '', NULL, CONCAT('$urlApp', users.url_foto)) AS url_foto,
                 empresas.*,
                 empresas.id AS id_empresa,
-                empresa_estudiante.proyecto
+                proyectos.nombre AS proyecto,
+                proyectos.tipo AS tipo_proyecto,
+                CONCAT(asesor_interno.nombre, ' ', asesor_interno.apellidos) AS nombre_asesor
             FROM estudiantes
             JOIN carreras ON estudiantes.carrera_id = carreras.id
-            JOIN empresa_estudiante ON estudiantes.id = empresa_estudiante.estudiante_id
-            JOIN empresas ON empresa_estudiante.empresa_id = empresas.id
-            JOIN periodos ON empresa_estudiante.periodo_id = periodos.id
+            JOIN residencias ON estudiantes.id = residencias.estudiante_id
+            JOIN empresas ON residencias.empresa_id = empresas.id
+            JOIN periodos ON residencias.periodo_id = periodos.id
             JOIN users ON estudiantes.user_id = users.id
+            LEFT JOIN proyectos ON residencias.proyecto_id = proyectos.id
+            LEFT JOIN asesor_interno ON residencias.asesor_interno_id = asesor_interno.id
             WHERE estudiantes.id = :estudiante_id
         ", ['estudiante_id' => $estudianteId]);
-
+        $datosEstudiante = [];
         if (!empty($resultado)) {
             $datosEstudiante = $resultado[0];
         }
@@ -86,38 +81,49 @@ class ResidenciaController extends Controller
 
     public function residentes(Request $request)
     {
+        //Total de documentos
+        $totalDocumentos = Documento::count();
         $urlApp = config('app.url') . '/storage/';
         $sql = "
-            SELECT
-                e.id AS estudiante_id,
+                SELECT e.id AS id_estudiante,
                 CONCAT(e.nombre, ' ', e.apellidos) AS nombre_completo,
                 IF(u.url_foto IS NULL OR u.url_foto = '', NULL, CONCAT('$urlApp', u.url_foto)) AS url_foto,
                 CONCAT(LEFT(e.nombre, 1), LEFT(e.apellidos, 1)) AS iniciales_nombre_apellido,
-                c.abrev AS nombre_carrera,
+                c.nombre AS nombre_carrera,
+                c.abrev AS abrev_carrera,
                 c.color AS color_carrera,
-                emp.nombre AS nombre_empresa,
-                emp.telefono AS telefono_empresa,
+                em.nombre AS nombre_empresa,
+                em.telefono AS telefono_empresa,
                 e.telefono AS telefono_estudiante,
                 e.numero_control AS numero_control_estudiante,
-                ee.proyecto AS proyecto
-            FROM empresa_estudiante AS ee
-            INNER JOIN estudiantes AS e ON ee.estudiante_id = e.id
-            INNER JOIN users AS u ON e.user_id = u.id
-            INNER JOIN carreras AS c ON e.carrera_id = c.id
-            INNER JOIN empresas AS emp ON ee.empresa_id = emp.id
-            INNER JOIN periodos AS p ON ee.periodo_id = p.id
-            WHERE p.activo = 1
-            AND e.deleted_at IS NULL;
+                p.nombre AS proyecto,
+                p.tipo AS tipo_proyecto,
+                CONCAT(ai.nombre, ' ', ai.apellidos) AS nombre_asesor,
+                :totalDocumentos AS total_documentos,
+                (
+                    SELECT COUNT(*)
+                    FROM entregas AS ent
+                    WHERE ent.estudiante_id = e.id
+                ) AS documentos_entregados
+            FROM estudiantes e
+            LEFT JOIN users u ON e.user_id = u.id
+            LEFT JOIN carreras c ON e.carrera_id = c.id
+            LEFT JOIN residencias r ON e.id = r.estudiante_id
+            LEFT JOIN empresas em ON r.empresa_id = em.id
+            LEFT JOIN proyectos p ON r.proyecto_id = p.id
+            LEFT JOIN asesor_interno ai ON r.asesor_interno_id = ai.id
+            LEFT JOIN periodos pe ON r.periodo_id = pe.id
+            WHERE e.deleted_at IS NULL AND pe.activo = true
         ";
-        $residentes = DB::select($sql);
+        $residentes = DB::select($sql, ['totalDocumentos' => $totalDocumentos]);
 
         return response()->json($residentes);
     }
 
     public function cancelarResidencia($estudiante)
     {
-        $estudiante = Estudiante::findOrFail($estudiante);
-        $estudiante->empresas()->detach();
+        $residencia = Residencia::where('estudiante_id', $estudiante)->first();
+        $residencia->delete();
         return response()->json(['message' => 'Se canceló la residencia'], 200);
     }
 
@@ -126,9 +132,8 @@ class ResidenciaController extends Controller
         $sql = "SELECT estudiantes.id,
             CONCAT(estudiantes.nombre, ' ', estudiantes.apellidos, ' | ', estudiantes.numero_control) AS nombre
         FROM estudiantes
-        LEFT JOIN empresa_estudiante ON estudiantes.id = empresa_estudiante.estudiante_id
-        WHERE empresa_estudiante.estudiante_id IS NULL
-        AND estudiantes.deleted_at IS NULL";
+        LEFT JOIN residencias ON estudiantes.id = residencias.estudiante_id
+        WHERE residencias.estudiante_id IS NULL";
         $estudiantesSinEmpresa = DB::select($sql);
         return response()->json($estudiantesSinEmpresa, 200);
     }
