@@ -140,7 +140,7 @@ class HomeController extends Controller
             return response()->json(["message" => "Usted no es un residente"]);
         }
         $estudiante = $user->estudiante;
-
+        //TODO: Hacer
         $result = DB::select(
             '
             SELECT
@@ -157,11 +157,12 @@ class HomeController extends Controller
                 em.telefono,
                 em.titular,
                 em.titular_puesto,
-                ee.proyecto
+                pr.nombre AS proyecto
             FROM estudiantes e
-            INNER JOIN empresa_estudiante ee ON e.id = ee.estudiante_id
-            INNER JOIN empresas em ON ee.empresa_id = em.id
-            INNER JOIN periodos pe ON ee.periodo_id = pe.id
+            INNER JOIN residencias r ON e.id = r.estudiante_id
+            INNER JOIN empresas em ON r.empresa_id = em.id
+            INNER JOIN periodos pe ON r.periodo_id = pe.id
+            INNER JOIN proyectos pr ON r.proyecto_id = pr.id
             WHERE e.id = ?
             LIMIT 1',
             [$estudiante->id]
