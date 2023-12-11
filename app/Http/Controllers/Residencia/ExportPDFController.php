@@ -18,7 +18,7 @@ class ExportPDFController extends Controller
         $car = Carrera::findOrFail($carrera);
         $urlApp = config('app.url') . '/storage/';
         $sql = "
-            SELECT
+                SELECT
                 e.id AS estudiante_id,
                 CONCAT(e.nombre, ' ', e.apellidos) AS nombre_completo,
                 IF(u.url_foto IS NULL OR u.url_foto = '', NULL, CONCAT('$urlApp', u.url_foto)) AS url_foto,
@@ -29,22 +29,27 @@ class ExportPDFController extends Controller
                 emp.telefono AS telefono_empresa,
                 e.telefono AS telefono_estudiante,
                 e.numero_control AS numero_control_estudiante,
-                ee.proyecto AS proyecto
-            FROM empresa_estudiante AS ee
+                pr.nombre AS proyecto,
+                pr.tipo AS tipo_proyecto,
+                CONCAT(ai.nombre, ' ', ai.apellidos) AS asesor_interno
+            FROM residencias AS ee
             INNER JOIN estudiantes AS e ON ee.estudiante_id = e.id
             INNER JOIN users AS u ON e.user_id = u.id
             INNER JOIN carreras AS c ON e.carrera_id = c.id
             INNER JOIN empresas AS emp ON ee.empresa_id = emp.id
             INNER JOIN periodos AS p ON ee.periodo_id = p.id
+            LEFT JOIN proyectos AS pr ON ee.proyecto_id = pr.id
+            LEFT JOIN asesor_interno AS ai ON ee.asesor_interno_id = ai.id
             WHERE p.activo = 1
             AND c.id = :carreraId
             AND e.deleted_at IS NULL;
         ";
         $residentes = DB::select($sql, ["carreraId" => $carrera]);
+        $car['escudo'] = $urlApp . $car['escudo'];
 
-        if (!Storage::exists('public/perfil/thumbnails')) {
+        /* if (!Storage::exists('public/perfil/thumbnails')) {
             Storage::makeDirectory('public/perfil/thumbnails');
-        }
+        } */
         /* foreach ($residentes as $residente) {
             if (!empty($residente->url_foto)) {
                 $image = \Image::make($residente->url_foto);
@@ -85,13 +90,17 @@ class ExportPDFController extends Controller
                 emp.telefono AS telefono_empresa,
                 e.telefono AS telefono_estudiante,
                 e.numero_control AS numero_control_estudiante,
-                ee.proyecto AS proyecto
-            FROM empresa_estudiante AS ee
+                pr.nombre AS proyecto,
+                pr.tipo AS tipo_proyecto,
+                CONCAT(ai.nombre, ' ', ai.apellidos) AS asesor_interno
+            FROM residencias AS ee
             INNER JOIN estudiantes AS e ON ee.estudiante_id = e.id
             INNER JOIN users AS u ON e.user_id = u.id
             INNER JOIN carreras AS c ON e.carrera_id = c.id
             INNER JOIN empresas AS emp ON ee.empresa_id = emp.id
             INNER JOIN periodos AS p ON ee.periodo_id = p.id
+            LEFT JOIN proyectos AS pr ON ee.proyecto_id = pr.id
+            LEFT JOIN asesor_interno AS ai ON ee.asesor_interno_id = ai.id
             WHERE p.activo = 1
             AND e.deleted_at IS NULL;
         ";

@@ -7,6 +7,13 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\UserEditController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Estudiante\HomeController;
+use App\Http\Controllers\Formatos\AsignacionAsesor;
+use App\Http\Controllers\Formatos\CartaPresentacion;
+use App\Http\Controllers\Formatos\DictamenAnteproyectos;
+use App\Http\Controllers\Formatos\InformeSemestral;
+use App\Http\Controllers\Formatos\PublicacionResultados;
+use App\Http\Controllers\Formatos\RegistroAsesoria;
+use App\Http\Controllers\Formatos\SolicitudResidencia;
 use App\Http\Controllers\Recursos\AsesorInternoController;
 use App\Http\Controllers\Recursos\CarreraController;
 use App\Http\Controllers\Recursos\DepartamentoController;
@@ -160,5 +167,17 @@ Route::get('residentes-export-pdf-carrera/{carrera}', [ExportPDFController::clas
     ->name('residentes.export.pdf.carrera');
 
 //Formatos
-Route::get('formato-carta-presentacion/{estudianteId}', [FormatoController::class, 'formatoCartaPresentacion'])
+Route::get('formato-solicitud-residencia/{estudianteId}', SolicitudResidencia::class)
+    ->name('formato.solicitud.residencia');
+Route::get('formato-asignacion-residencia/{estudianteId}', AsignacionAsesor::class)
+    ->name('formato.asignacion.residencia');
+Route::get('formato-carta-presentacion/{estudianteId}', CartaPresentacion::class)
     ->name('formato.carta.presentacion');
+Route::get('formato-dictamen-anteproyecto/{carreraId}', DictamenAnteproyectos::class)
+    ->name('formato.dictamen.aneproyecto');
+Route::get('formato-publicacion-resultados/{carreraId}', PublicacionResultados::class)
+    ->name('formato.publicacion.resultados');
+Route::get('formato-informe-semestral/{estudianteId}', InformeSemestral::class)
+    ->name('formato.informe.semestral');
+Route::get('formato-registro-asesoria/{estudianteId}', RegistroAsesoria::class)
+    ->name('formato.registro.asesoria');

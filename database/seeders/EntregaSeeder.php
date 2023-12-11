@@ -18,15 +18,15 @@ class EntregaSeeder extends Seeder
         $estudiantes = Estudiante::all();
         $documentos = Documento::all();
         foreach ($estudiantes as $estudiante) {
-            // Crear entregas repetidas para algunos estudiantes
-            $repetirEntregas = rand(1, 3); // Por ejemplo, repetir 1 a 3 veces
+
+            $repetirEntregas = rand(1, 3);
             for ($i = 0; $i < $repetirEntregas; $i++) {
                 Entrega::factory()->create([
                     'student_id' => $estudiante->id,
                     'documento_id' => $documentos->random()->id,
                 ]);
             }
-            // Crear entregas únicas para otros estudiantes
+
             if ($repetirEntregas === 1) {
                 Entrega::factory()->create([
                     'student_id' => $estudiante->id,

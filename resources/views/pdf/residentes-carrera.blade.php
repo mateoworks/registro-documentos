@@ -59,7 +59,7 @@
     }
 
     td.ancho-maximo {
-        max-width: 170px;
+        max-width: 180px;
     }
 
     /* Estilos para la tabla anidada (hija) */
@@ -84,14 +84,41 @@
     .chip-carrera {
         border-radius: 2px;
         padding: 1px;
+        color: white;
+    }
 
+    .tipo-proyecto {
+        border-radius: 2px;
+        padding: 1px;
+        background-color: lightgray;
+    }
+
+    .asesor {
+        border-radius: 2px;
+        padding: 1px;
+        background-color: lightblue;
+    }
+
+    .clave {
+        font-size: 10px;
     }
 </style>
 
 <body>
-    <div class="titulo">
-        Lista de residentes del periodo {{$periodo->nombre}} de la carrera {{ $carrera->nombre }}
-    </div>
+    <table>
+        <tr>
+            <td>
+                <img src="{{ $carrera->escudo }}" alt="Escudo" width="85px">
+            </td>
+            <td>
+                <div class="titulo">
+                    Lista de residentes del periodo {{$periodo->nombre}} de la carrera {{ $carrera->nombre }}
+                </div>
+                <small class="clave">{{ $carrera->clave }}</small>
+            </td>
+        </tr>
+    </table>
+
     <table class="tabla-principal">
         <thead>
             <tr>
@@ -126,11 +153,26 @@
                         </tr>
                     </table>
                 </td>
-                <td>
+                <td class="ancho-maximo">
                     <div>{{$residente->nombre_empresa }}</div>
                     <div>{{$residente->telefono_empresa }}</div>
                 </td>
-                <td class="ancho-maximo">{{$residente->proyecto }}</td>
+                <td class="ancho-maximo">
+                    <div>{{$residente->proyecto }}</div>
+                    <small>
+                        @if ($residente->tipo_proyecto)
+                        <span class="tipo-proyecto">{{ $residente->tipo_proyecto }}</span>
+                        @else
+                        No hay proyecto asignado
+                        @endif
+                        |
+                        @if ($residente->asesor_interno)
+                        <span class="asesor">{{ $residente->asesor_interno }}</span>
+                        @else
+                        No hay asesor asignado
+                        @endif
+                    </small>
+                </td>
             </tr>
             @endforeach
         </tbody>

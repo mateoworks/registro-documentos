@@ -59,7 +59,7 @@
     }
 
     td.ancho-maximo {
-        max-width: 170px;
+        max-width: 180px;
     }
 
     /* Estilos para la tabla anidada (hija) */
@@ -84,7 +84,24 @@
     .chip-carrera {
         border-radius: 2px;
         padding: 1px;
+        color: white;
+    }
 
+    .m-0 {
+        margin: 0;
+        padding: 0;
+    }
+
+    .tipo-proyecto {
+        border-radius: 2px;
+        padding: 1px;
+        background-color: lightgray;
+    }
+
+    .asesor {
+        border-radius: 2px;
+        padding: 1px;
+        background-color: lightblue;
     }
 </style>
 
@@ -106,7 +123,7 @@
                 <td>
                     <table class="tabla-anidada">
                         <tr>
-                            <td class="cell-avatar">
+                            <td class="cell-avatar m-0">
                                 @if ($residente->url_foto)
                                 <img src="{{ $residente->url_foto }}" alt="Avatar" class="avatar-image">
                                 @else
@@ -115,7 +132,7 @@
                             </td>
                             <td>
                                 <div>{{ $residente->nombre_completo }}</div>
-                                <div class="details">
+                                <div class="details m-0">
                                     <span class="chip-carrera" style="background-color: {{ $residente->color_carrera }};">
                                         {{$residente->nombre_carrera}}
                                     </span>
@@ -126,11 +143,26 @@
                         </tr>
                     </table>
                 </td>
-                <td>
+                <td class="ancho-maximo m-0">
                     <div>{{$residente->nombre_empresa }}</div>
                     <div>{{$residente->telefono_empresa }}</div>
                 </td>
-                <td class="ancho-maximo">{{$residente->proyecto }}</td>
+                <td class="ancho-maximo m-0">
+                    <div>{{$residente->proyecto }}</div>
+                    <small>
+                        @if ($residente->tipo_proyecto)
+                        <span class="tipo-proyecto">{{ $residente->tipo_proyecto }}</span>
+                        @else
+                        No hay proyecto asignado
+                        @endif
+                        |
+                        @if ($residente->asesor_interno)
+                        <span class="asesor">{{ $residente->asesor_interno }}</span>
+                        @else
+                        No hay asesor asignado
+                        @endif
+                    </small>
+                </td>
             </tr>
             @endforeach
         </tbody>

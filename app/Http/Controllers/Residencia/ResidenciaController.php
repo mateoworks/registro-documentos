@@ -61,6 +61,8 @@ class ResidenciaController extends Controller
                 empresas.id AS id_empresa,
                 proyectos.nombre AS proyecto,
                 proyectos.tipo AS tipo_proyecto,
+                proyectos.id AS proyecto_id,
+                asesor_interno.id AS asesor_id,
                 CONCAT(asesor_interno.nombre, ' ', asesor_interno.apellidos) AS nombre_asesor
             FROM estudiantes
             JOIN carreras ON estudiantes.carrera_id = carreras.id
@@ -85,7 +87,7 @@ class ResidenciaController extends Controller
         $totalDocumentos = Documento::count();
         $urlApp = config('app.url') . '/storage/';
         $sql = "
-                SELECT e.id AS id_estudiante,
+            SELECT e.id AS id_estudiante,
                 CONCAT(e.nombre, ' ', e.apellidos) AS nombre_completo,
                 IF(u.url_foto IS NULL OR u.url_foto = '', NULL, CONCAT('$urlApp', u.url_foto)) AS url_foto,
                 CONCAT(LEFT(e.nombre, 1), LEFT(e.apellidos, 1)) AS iniciales_nombre_apellido,
@@ -143,15 +145,12 @@ class ResidenciaController extends Controller
         $request->validate([
             'estudiante_id' => 'required',
             'empresa_id' => 'required',
-            'proyecto' => 'required',
+            'proyecto_id' => 'nullable',
             'periodo_id' => 'required',
+            'asesor_interno_id' => 'nullable',
         ]);
-        $estudiante = Estudiante::findOrFail($request->estudiante_id);
-        $estudiante->empresas()->sync([$request->empresa_id => [
-            'proyecto' => $request->proyecto,
-            'periodo_id' => $request->periodo_id,
-            'actividad' => 'Residencia profesional',
-        ]]);
+        $residencia = Residencia::where('estudiante_id', $request->estudiante_id)->first();
+        $residencia->update($request->all());
     }
 
     public function entregasPorResidente(Request $request)
