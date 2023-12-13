@@ -20,6 +20,7 @@ use App\Http\Controllers\Recursos\DepartamentoController;
 use App\Http\Controllers\Recursos\DocumentoController;
 use App\Http\Controllers\Recursos\PeriodoController;
 use App\Http\Controllers\Recursos\ProyectoController;
+use App\Http\Controllers\Residencia\AreaController;
 use App\Http\Controllers\Residencia\ConsultasController;
 use App\Http\Controllers\Residencia\EmpresaController;
 use App\Http\Controllers\Residencia\EntregaController;
@@ -88,6 +89,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('empresas-trashed', [EmpresaController::class, 'indexTrashed'])->name('empresas.trashed');
     Route::patch('empresas-restore', [EmpresaController::class, 'restore'])->name('empresas.restore');
     Route::delete('empresas-force-delete', [EmpresaController::class, 'forceDelete'])->name('empresas.forceDelete');
+
+    Route::apiResource('areas', AreaController::class)->names('areas');
+    Route::get('areas-empresa/{empresaId}', [AreaController::class, 'areasPorEmpresa'])->name('areas.empresa');
 
     Route::apiResource('entregas', EntregaController::class)->names('entregas');
 

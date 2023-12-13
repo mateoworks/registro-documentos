@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             ProyectoSeeder::class,
             AsesoresInternosSeeder::class,
+            AreaSeeder::class,
             ResidenciaSeeder::class,
         ]);
         $user = User::factory()->create(['email' => 'email@email.com']);

@@ -30,11 +30,13 @@ class ResidenciaController extends Controller
     {
         $data = $request->all();
         if (!$request->periodo_id)
-            $data['periodo'] = Periodo::where('activo', true)->first();
-        else
+            $periodo = Periodo::where('activo', true)->first();
+        else {
             $periodo = Periodo::findOrFail($request->periodo_id);
+        }
+        $data['periodo_id'] = $periodo->id;
 
-        $residente = Residencia::create($request->all());
+        Residencia::create($data);
 
         return response()->json(['message' => 'La asignación de residencia fue exitosa'], 200);
     }

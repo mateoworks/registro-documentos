@@ -61,6 +61,9 @@ class SolicitudResidencia extends Controller
         $resultado = DB::select($sql, ['idestudiante' => $estudianteId]);
         if (!empty($resultado)) {
             $datosEstudiante = $resultado[0];
+        } else {
+            echo "No se encontró el residente";
+            return;
         }
 
 

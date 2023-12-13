@@ -121,7 +121,7 @@ class EntregaController extends Controller
         $result = DB::select('
             SELECT e.numero_control, p.nombre AS nombre_periodo
             FROM estudiantes AS e
-            JOIN empresa_estudiante AS ee ON e.id = ee.estudiante_id
+            JOIN residencias AS ee ON e.id = ee.estudiante_id
             JOIN periodos AS p ON ee.periodo_id = p.id
             WHERE e.id = :estudianteId
             ORDER BY p.created_at ASC

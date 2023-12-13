@@ -24,14 +24,12 @@ class Empresa extends Model
         'nombre_firmara_puesto',
     ];
 
-    protected $allowIncluded = ['estudiantes'];
+    protected $allowIncluded = ['estudiantes', 'areas'];
     protected $allowFilter = ['nombre', 'giro', 'ciudad', 'titular'];
     protected $allowSort = ['nombre', 'giro', 'ciudad', 'titular'];
 
-    public function estudiantes(): BelongsToMany
+    public function areas()
     {
-        return $this->belongsToMany(Estudiante::class, 'empresa_estudiante')
-            ->withPivot('actividad', 'periodo_id')
-            ->withTimestamps();
+        return $this->hasMany(Area::class, 'empresa_id');
     }
 }
