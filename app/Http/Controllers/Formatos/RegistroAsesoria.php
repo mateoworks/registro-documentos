@@ -28,7 +28,8 @@ class RegistroAsesoria extends Controller
             CONCAT(ai.nombre, ' ', ai.apellidos) AS asesor_inter
         FROM residencias r
         LEFT JOIN estudiantes est ON r.estudiante_id = est.id
-        LEFT JOIN empresas emp ON r.empresa_id = emp.id
+        LEFT JOIN areas a ON r.area_id = a.id
+        LEFT JOIN empresas emp ON a.empresa_id = emp.id
         LEFT JOIN carreras car ON est.carrera_id = car.id
         LEFT JOIN departamentos depto ON car.departamento_id = depto.id
         LEFT JOIN proyectos proy ON r.proyecto_id = proy.id

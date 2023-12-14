@@ -36,7 +36,8 @@ class ExportPDFController extends Controller
             INNER JOIN estudiantes AS e ON ee.estudiante_id = e.id
             INNER JOIN users AS u ON e.user_id = u.id
             INNER JOIN carreras AS c ON e.carrera_id = c.id
-            INNER JOIN empresas AS emp ON ee.empresa_id = emp.id
+            INNER JOIN areas AS a ON ee.area_id = a.id
+            INNER JOIN empresas AS emp ON a.empresa_id = emp.id
             INNER JOIN periodos AS p ON ee.periodo_id = p.id
             LEFT JOIN proyectos AS pr ON ee.proyecto_id = pr.id
             LEFT JOIN asesor_interno AS ai ON ee.asesor_interno_id = ai.id
@@ -97,7 +98,8 @@ class ExportPDFController extends Controller
             INNER JOIN estudiantes AS e ON ee.estudiante_id = e.id
             INNER JOIN users AS u ON e.user_id = u.id
             INNER JOIN carreras AS c ON e.carrera_id = c.id
-            INNER JOIN empresas AS emp ON ee.empresa_id = emp.id
+            INNER JOIN areas AS a ON ee.area_id = a.id
+            INNER JOIN empresas AS emp ON a.empresa_id = emp.id
             INNER JOIN periodos AS p ON ee.periodo_id = p.id
             LEFT JOIN proyectos AS pr ON ee.proyecto_id = pr.id
             LEFT JOIN asesor_interno AS ai ON ee.asesor_interno_id = ai.id

@@ -32,7 +32,8 @@ class AsignacionAsesor extends Controller
         LEFT JOIN carreras car ON est.carrera_id = car.id
         LEFT JOIN departamentos depto ON car.id = depto.id
         LEFT JOIN proyectos proy ON r.proyecto_id = proy.id
-        LEFT JOIN empresas emp ON r.empresa_id = emp.id
+        LEFT JOIN areas a ON r.area_id = a.id
+        LEFT JOIN empresas emp ON a.empresa_id = emp.id
         LEFT JOIN periodos per ON r.periodo_id = per.id
         LEFT JOIN asesor_interno ai ON r.asesor_interno_id = ai.id
         WHERE r.estudiante_id = :idestudiante

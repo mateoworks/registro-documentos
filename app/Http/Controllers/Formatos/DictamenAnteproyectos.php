@@ -37,7 +37,8 @@ class DictamenAnteproyectos extends Controller
         LEFT JOIN estudiantes est ON r.estudiante_id = est.id
         LEFT JOIN carreras car ON est.carrera_id = car.id
         LEFT JOIN proyectos proy ON r.proyecto_id = proy.id
-        LEFT JOIN empresas emp ON r.empresa_id = emp.id
+        LEFT JOIN areas a ON r.area_id = a.id
+        LEFT JOIN empresas emp ON a.empresa_id = emp.id
         LEFT JOIN asesor_interno ai ON r.asesor_interno_id = ai.id
         WHERE est.carrera_id=:carreraId AND r.periodo_id = :periodoId
         ";

@@ -7,6 +7,7 @@ use App\Http\Requests\AreaRequest;
 use App\Http\Resources\AreaResource;
 use App\Models\Area;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
 {
@@ -46,5 +47,19 @@ class AreaController extends Controller
     {
         $areas = Area::where('empresa_id', $empresaId)->get();
         return AreaResource::collection($areas);
+    }
+
+    public function areasEmpresasNombre()
+    {
+        $sql = "
+        SELECT
+            a.id,
+            CONCAT(emp.nombre, ' - ', a.nombre) AS nombre
+        FROM
+        areas a
+        LEFT JOIN empresas emp ON a.empresa_id = emp.id
+        ";
+        $areas = DB::select($sql);
+        return response()->json($areas);
     }
 }

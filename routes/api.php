@@ -92,6 +92,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('areas', AreaController::class)->names('areas');
     Route::get('areas-empresa/{empresaId}', [AreaController::class, 'areasPorEmpresa'])->name('areas.empresa');
+    Route::get('areas-empresas-nombre', [AreaController::class, 'areasEmpresasNombre'])->name('areas.empresas.nombre');
 
     Route::apiResource('entregas', EntregaController::class)->names('entregas');
 

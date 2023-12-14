@@ -23,7 +23,7 @@ class ResidenteRequest extends FormRequest
     {
         return [
             'estudiante_id' => 'required|unique:residencias,estudiante_id',
-            'empresa_id' => 'required|exists:empresas,id',
+            'area_id' => 'required|exists:areas,id',
             'periodo_id' => 'nullable|exists:periodos,id',
             'asesor_interno_id' => 'nullable|exists:asesor_interno,id',
             'proyecto_id' => 'nullable|exists:proyectos,id',

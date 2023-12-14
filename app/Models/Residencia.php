@@ -13,7 +13,7 @@ class Residencia extends Model
 
     protected $fillable = [
         'estudiante_id',
-        'empresa_id',
+        'area_id',
         'periodo_id',
         'asesor_interno_id',
         'proyecto_id',
@@ -24,14 +24,14 @@ class Residencia extends Model
         return $this->belongsTo(Estudiante::class, 'estudiante_id', 'id');
     }
 
-    public function empresa()
-    {
-        return $this->belongsTo(Empresa::class, 'empresa_id', 'id');
-    }
-
     public function periodo()
     {
         return $this->belongsTo(Periodo::class, 'periodo_id', 'id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
     }
 
     public function asesorInterno()

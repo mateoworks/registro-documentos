@@ -61,6 +61,7 @@ class ResidenciaController extends Controller
                 IF(users.url_foto IS NULL OR users.url_foto = '', NULL, CONCAT('$urlApp', users.url_foto)) AS url_foto,
                 empresas.*,
                 empresas.id AS id_empresa,
+                areas.id AS area_id,
                 proyectos.nombre AS proyecto,
                 proyectos.tipo AS tipo_proyecto,
                 proyectos.id AS proyecto_id,
@@ -69,7 +70,8 @@ class ResidenciaController extends Controller
             FROM estudiantes
             JOIN carreras ON estudiantes.carrera_id = carreras.id
             JOIN residencias ON estudiantes.id = residencias.estudiante_id
-            JOIN empresas ON residencias.empresa_id = empresas.id
+            JOIN areas ON residencias.area_id = areas.id
+            JOIN empresas ON areas.empresa_id = empresas.id
             JOIN periodos ON residencias.periodo_id = periodos.id
             JOIN users ON estudiantes.user_id = users.id
             LEFT JOIN proyectos ON residencias.proyecto_id = proyectos.id
@@ -113,7 +115,8 @@ class ResidenciaController extends Controller
             LEFT JOIN users u ON e.user_id = u.id
             LEFT JOIN carreras c ON e.carrera_id = c.id
             LEFT JOIN residencias r ON e.id = r.estudiante_id
-            LEFT JOIN empresas em ON r.empresa_id = em.id
+            LEFT JOIN areas a ON r.area_id = a.id
+            LEFT JOIN empresas em ON a.empresa_id = em.id
             LEFT JOIN proyectos p ON r.proyecto_id = p.id
             LEFT JOIN asesor_interno ai ON r.asesor_interno_id = ai.id
             LEFT JOIN periodos pe ON r.periodo_id = pe.id
@@ -146,7 +149,7 @@ class ResidenciaController extends Controller
     {
         $request->validate([
             'estudiante_id' => 'required',
-            'empresa_id' => 'required',
+            'area_id' => 'required',
             'proyecto_id' => 'nullable',
             'periodo_id' => 'required',
             'asesor_interno_id' => 'nullable',

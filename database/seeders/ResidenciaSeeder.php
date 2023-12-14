@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Area;
 use App\Models\AsesorInterno;
 use App\Models\Empresa;
 use App\Models\Estudiante;
@@ -19,7 +20,7 @@ class ResidenciaSeeder extends Seeder
     public function run(): void
     {
         $estudiantes = Estudiante::pluck('id')->toArray();
-        $empresas = Empresa::pluck('id')->toArray();
+        $areas = Area::pluck('id')->toArray();
         $proyectos = Proyecto::pluck('id')->toArray();
         $asesores = AsesorInterno::pluck('id')->toArray();
 
@@ -32,7 +33,7 @@ class ResidenciaSeeder extends Seeder
         foreach ($estudiantesParaAsignar as $estudianteID) {
             Residencia::create([
                 'estudiante_id' => $estudianteID,
-                'empresa_id' => $faker->randomElement($empresas),
+                'area_id' => $faker->randomElement($areas),
                 'periodo_id' => 8,
                 'asesor_interno_id' => $faker->randomElement($asesores),
                 'proyecto_id' => $faker->randomElement($proyectos),

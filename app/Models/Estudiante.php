@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class Estudiante extends Model
@@ -88,7 +89,12 @@ class Estudiante extends Model
 
     public function empresa()
     {
-        return $this->hasOneThrough(Empresa::class, Residencia::class, 'estudiante_id', 'id', 'id', 'empresa_id');
+
+        return $this->hasOneThrough(Area::class, Residencia::class, 'estudiante_id', 'id', 'id', 'area_id');
+    }
+    public function residencia()
+    {
+        return $this->belongsTo(Residencia::class);
     }
 
     public function periodo()

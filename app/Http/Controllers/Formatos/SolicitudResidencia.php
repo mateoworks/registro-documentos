@@ -37,10 +37,10 @@ class SolicitudResidencia extends Controller
             emp.mision AS mision_empresa,
             emp.titular AS nombre_titular,
             emp.titular_puesto,
-            emp.asesor_externo,
-            emp.asesor_externo_puesto,
-            emp.nombre_firmara,
-            emp.nombre_firmara_puesto,
+            a.asesor_externo,
+            a.asesor_externo_puesto,
+            a.nombre_firmara,
+            a.nombre_firmara_puesto,
             CONCAT(est.nombre, ' ', est.apellidos) AS nombre_estudiante,
             est.numero_control,
             est.domicilio AS domicilio_est,
@@ -54,7 +54,8 @@ class SolicitudResidencia extends Controller
         LEFT JOIN carreras car ON est.carrera_id = car.id
         LEFT JOIN departamentos depto ON car.id = depto.id
         LEFT JOIN proyectos proy ON r.proyecto_id = proy.id
-        LEFT JOIN empresas emp ON r.empresa_id = emp.id
+        LEFT JOIN areas a ON r.area_id = a.id
+        LEFT JOIN empresas emp ON a.empresa_id = emp.id
         LEFT JOIN periodos per ON r.periodo_id = per.id
         WHERE r.estudiante_id = :idestudiante
         ";
@@ -110,8 +111,8 @@ class SolicitudResidencia extends Controller
             $templateProcessor->setValue('30', $datosEstudiante->domicilio_est);
             $templateProcessor->setValue('31', $datosEstudiante->email_est);
             $templateProcessor->setValue('32_1', ($datosEstudiante->seguridad_social === 'IMSS') ? 'x' : '');
-            $templateProcessor->setValue('32_1', ($datosEstudiante->seguridad_social === 'ISSSTE') ? 'x' : '');
-            $templateProcessor->setValue('32_1', ($datosEstudiante->seguridad_social === 'OTROS') ? 'x' : '');
+            $templateProcessor->setValue('32_2', ($datosEstudiante->seguridad_social === 'ISSSTE') ? 'x' : '');
+            $templateProcessor->setValue('32_3', ($datosEstudiante->seguridad_social === 'OTROS') ? 'x' : '');
             $templateProcessor->setValue('32', $datosEstudiante->no_seguridad_social);
             $templateProcessor->setValue('33', $datosEstudiante->ciudad_estudiante);
             $templateProcessor->setValue('34', $datosEstudiante->telefono_estudiante);

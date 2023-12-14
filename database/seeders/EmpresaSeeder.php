@@ -14,7 +14,7 @@ class EmpresaSeeder extends Seeder
     public function run(): void
     {
         Empresa::factory([
-            'nombre' => 'Instituto Tecnológico de Tecomatlán - Depto. División Estudios',
+            'nombre' => 'Instituto Tecnológico de Tecomatlán',
             'giro' => 'Público',
             'rfc' => 'SEP2109057',
             'domicilio' => 'Carretera Palomas – Tlapa en el km 19.5',
@@ -32,7 +32,7 @@ class EmpresaSeeder extends Seeder
         ])->create();
 
         Empresa::factory([
-            'nombre' => 'Instituto Tecnológico de Tecomatlán - Depto. Ciencias Básicas',
+            'nombre' => 'Instituto Tecnológico de Tecomatlán',
             'giro' => 'Público',
             'rfc' => 'SEP2109057',
             'domicilio' => 'Carretera Palomas – Tlapa en el km 19.5',
@@ -50,7 +50,7 @@ class EmpresaSeeder extends Seeder
         ])->create();
 
         Empresa::factory([
-            'nombre' => 'Instituto Tecnológico de Tecomatlán - Depto. Gestión Tecnológica y Vinculación',
+            'nombre' => 'Instituto Tecnológico de Tecomatlán',
             'giro' => 'Público',
             'rfc' => 'SEP2109057',
             'domicilio' => 'Carretera Palomas – Tlapa en el km 19.5',

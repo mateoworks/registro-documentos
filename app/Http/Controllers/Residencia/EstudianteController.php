@@ -137,7 +137,7 @@ class EstudianteController extends Controller
                 e.id AS id_estudiante,
                 c.id AS id_carrera,
                 CASE
-                    WHEN ee.empresa_id IS NOT NULL THEN 1
+                    WHEN ee.area_id IS NOT NULL THEN 1
                     ELSE 0
                 END AS tiene_relacion_empresa,
                 emp.nombre AS nombre_empresa,
@@ -149,8 +149,9 @@ class EstudianteController extends Controller
             FROM estudiantes e
             LEFT JOIN users u ON e.user_id = u.id
             LEFT JOIN carreras c ON e.carrera_id = c.id
-            LEFT JOIN empresa_estudiante ee ON e.id = ee.estudiante_id
-            LEFT JOIN empresas emp ON ee.empresa_id = emp.id
+            LEFT JOIN residencias ee ON e.id = ee.estudiante_id
+            LEFT JOIN areas a ON ee.id = a.id
+            LEFT JOIN empresas emp ON a.empresa_id = emp.id
             LEFT JOIN periodos p ON ee.periodo_id = p.id
             WHERE
                 CONCAT(e.nombre, ' ', e.apellidos) LIKE :term1
