@@ -30,10 +30,6 @@ class EmpresaFactory extends Factory
             'mision' => $this->faker->paragraph,
             'titular' => $this->faker->name,
             'titular_puesto' => $this->faker->jobTitle,
-            'asesor_externo' => $this->faker->name,
-            'asesor_externo_puesto' => $this->faker->jobTitle,
-            'nombre_firmara' => $this->faker->name,
-            'nombre_firmara_puesto' => $this->faker->jobTitle,
         ];
     }
 }

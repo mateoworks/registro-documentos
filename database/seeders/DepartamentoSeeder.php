@@ -14,15 +14,15 @@ class DepartamentoSeeder extends Seeder
     public function run(): void
     {
         Departamento::factory()->create([
-            'nombre' => 'Departamento de Ingenierías',
+            'nombre' => 'Ingenierías',
         ]);
 
         Departamento::factory()->create([
-            'nombre' => 'Departamento de Ciencias Básicas',
+            'nombre' => 'Ciencias Básicas',
         ]);
 
         Departamento::factory()->create([
-            'nombre' => 'Departamento de Gestión Empresarial',
+            'nombre' => 'Gestión Empresarial',
         ]);
     }
 }

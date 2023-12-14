@@ -147,7 +147,7 @@ class HomeController extends Controller
                 pe.id AS periodo_id,
                 pe.nombre AS nombre_periodo,
                 em.id AS empresa_id,
-                em.nombre AS nombre_empresa,
+                CONCAT(em.nombre, ' - ', a.nombre) AS nombre_empresa,
                 em.rfc,
                 em.domicilio,
                 em.colonia,
@@ -162,7 +162,8 @@ class HomeController extends Controller
                 ai.telefono AS telefono_asesor
             FROM estudiantes e
             INNER JOIN residencias r ON e.id = r.estudiante_id
-            INNER JOIN empresas em ON r.empresa_id = em.id
+            INNER JOIN areas a ON r.area_id = a.id
+            INNER JOIN empresas em ON a.empresa_id = em.id
             INNER JOIN periodos pe ON r.periodo_id = pe.id
             LEFT JOIN proyectos pr ON r.proyecto_id = pr.id
             LEFT JOIN asesor_interno ai ON r.asesor_interno_id = ai.id

@@ -33,10 +33,6 @@ class StoreEmpresaRequest extends FormRequest
             'mision' => 'nullable|string',
             'titular' => 'required|string|max:255',
             'titular_puesto' => 'required|string|max:255',
-            'asesor_externo' => 'nullable|string|max:255',
-            'asesor_externo_puesto' => 'nullable|string|max:255',
-            'nombre_firmara' => 'nullable|string|max:255',
-            'nombre_firmara_puesto' => 'nullable|string|max:255',
         ];
     }
 

@@ -20,8 +20,6 @@ class Empresa extends Model
     protected $fillable = [
         'nombre', 'giro', 'rfc', 'domicilio', 'colonia', 'cp',
         'ciudad', 'telefono', 'mision', 'titular', 'titular_puesto',
-        'asesor_externo', 'asesor_externo_puesto', 'nombre_firmara',
-        'nombre_firmara_puesto',
     ];
 
     protected $allowIncluded = ['estudiantes', 'areas'];

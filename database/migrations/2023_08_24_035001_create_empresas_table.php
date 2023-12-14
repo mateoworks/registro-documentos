@@ -24,11 +24,6 @@ return new class extends Migration
             $table->mediumText('mision')->nullable();
             $table->string('titular');
             $table->string('titular_puesto');
-            $table->string('asesor_externo')->nullable();
-            $table->string('asesor_externo_puesto')->nullable();
-            $table->string('nombre_firmara')->nullable();
-            $table->string('nombre_firmara_puesto')->nullable();
-
 
             $table->softDeletes();
             $table->timestamps();

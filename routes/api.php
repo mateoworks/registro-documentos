@@ -105,6 +105,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('estudiantes-force-delete', [EstudianteController::class, 'forceDelete'])->name('estudiantes.forceDelete');
     Route::get('buscar-estudiante', [EstudianteController::class, 'buscarEstudiante'])
         ->name('estudiantes.buscar');
+    Route::get('estudiante-empresas/{estudianteId}', [EstudianteController::class, 'empresaResidencia'])->name('estudiantes.empresa');
 
     Route::apiResource('estudiantes', EstudianteController::class)->names('estudiantes');
     Route::apiResource('asesores', AsesorInternoController::class)->names('asesores');

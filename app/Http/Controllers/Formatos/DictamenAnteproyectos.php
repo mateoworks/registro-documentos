@@ -32,7 +32,7 @@ class DictamenAnteproyectos extends Controller
             proy.nombre AS nombre_proyecto,
             emp.nombre AS nombre_empresa,
             CONCAT(ai.nombre, ' ', ai.apellidos) AS asesor_inter,
-            emp.asesor_externo
+            a.asesor_externo
         FROM residencias r
         LEFT JOIN estudiantes est ON r.estudiante_id = est.id
         LEFT JOIN carreras car ON est.carrera_id = car.id

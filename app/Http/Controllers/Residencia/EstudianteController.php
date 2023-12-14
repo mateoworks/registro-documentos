@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
+use function PHPUnit\Framework\isEmpty;
+
 class EstudianteController extends Controller
 {
     /**
@@ -120,6 +122,29 @@ class EstudianteController extends Controller
         $this->authorize('forzar eliminacion estudiantes');
         $estudiante = Estudiante::withTrashed()->findOrFail($request->ids);
         $estudiante->forceDelete();
+    }
+
+    public function empresaResidencia($estudianteId)
+    {
+        $sql = "
+        SELECT
+            CONCAT(emp.nombre, ' - ', a.nombre) AS nombre_empresa,
+            emp.*,
+            a.nombre AS nombre_area,
+            a.*
+        FROM
+        estudiantes est
+        LEFT JOIN residencias r ON r.estudiante_id = est.id
+        LEFT JOIN areas a ON r.area_id = a.id
+        LEFT JOIN empresas emp ON a.empresa_id = emp.id
+        WHERE est.id = :estudianteId
+        ";
+        $empresaConsulta = DB::select($sql, ['estudianteId' => $estudianteId]);
+        $empresa = null;
+        if ($empresaConsulta) {
+            $empresa = $empresaConsulta[0];
+        }
+        return response()->json($empresa);
     }
 
     public function buscarEstudiante(Request $request)
